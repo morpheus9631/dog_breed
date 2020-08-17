@@ -7,5 +7,6 @@ WORK:
               
 DATA:
   ROOT_PATH: "D:\\Dataset\\dog_breed\\"
+  TRAIN_DIR: "train"
+  TEST_DIR: "test"
   FRAC_FOR_TRAIN: 0.8
- 

@@ -9,6 +9,8 @@ _C.WORK.LABELS_FNAME = "labels.csv"
 
 _C.DATA = CN()
 _C.DATA.ROOT_PATH = "D:\\Dataset\\dog_breed\\"
+_C.DATA.TEST_DIR = "test"
+_C.DATA.TRAIN_DIR = "train"
 _C.DATA.FRAC_FOR_TRAIN = 0.8
 
 
