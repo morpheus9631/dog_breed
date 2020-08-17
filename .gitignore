@@ -1,0 +1,4 @@
+# dog_breed .gitignore
+
+__pycache__/
+.ipynb_checkpoints/

@@ -5,14 +5,11 @@ _C = CN()
 
 _C.WORK = CN()
 _C.WORK.ROOT_PATH = "D:\\GitWork\\dog_breed\\"
+_C.WORK.LABELS_FNAME = "labels.csv"
 
 _C.DATA = CN()
 _C.DATA.ROOT_PATH = "D:\\Dataset\\dog_breed\\"
 _C.DATA.FRAC_FOR_TRAIN = 0.8
-
-_C.LABEL = CN()
-_C.LABEL.FNAME = label.csv
-
 
 
 def get_cfg_defaults():
