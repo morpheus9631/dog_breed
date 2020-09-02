@@ -1,0 +1,12 @@
+# config_train.yaml
+
+WORK:
+  PATH: '/home/user/work/dog_breed/'
+  LABELS_FNAME: "labels.csv"
+              
+DATA:
+  PATH: "/home/user/work/dog_breed/data/"
+  FRAC_FOR_TRAIN: 0.8
+
+TRAIN:
+  NUM_EPOCHS: 25  

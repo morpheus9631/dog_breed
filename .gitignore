@@ -1,4 +1,8 @@
-# dog_breed .gitignore
-
-__pycache__/
+#.gitignore
 .ipynb_checkpoints/
+
+
+# Data:
+data/
+!data/download.txt
+

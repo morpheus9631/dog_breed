@@ -1,0 +1,10 @@
+# config_train.yaml
+
+WORK:
+  ROOT_PATH: "D:\\GitWork\\dog_breed\\"
+  LABELS_FNAME: "labels.csv"
+
+              
+DATA:
+  ROOT_PATH: "D:\\Dataset\\dog_breed\\"
+  FRAC_FOR_TRAIN: 0.8
