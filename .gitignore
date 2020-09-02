@@ -1,8 +1,16 @@
-#.gitignore
-.ipynb_checkpoints/
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
 
+# Jupyter Notebook
+.ipynb_checkpoints
 
 # Data:
-data/
+data/*
 !data/download.txt
-
+!data/*/
+data/processed/
+!data/processed/*.npy
+data/raw/
+!data/raw/*.csv
