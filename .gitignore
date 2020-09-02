@@ -10,9 +10,9 @@ __pycache__/
 data/*
 !data/download.txt
 !data/*/
-data/processed/
+data/processed/*
 !data/processed/*.npy
-data/raw/
+data/raw/*
 !data/raw/*.csv
 
 # vsccode
