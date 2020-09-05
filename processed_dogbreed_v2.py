@@ -134,7 +134,7 @@ def main():
     
     # Save numpy array as .npy file
     phase = ['train', 'valid']
-    types = ['imgs', 'labels']
+    types = ['images', 'labels']
     fname = ['{}_{}.npy'.format(y, x) for x in types for y in phase]
 
     print('\nProcess start...')
