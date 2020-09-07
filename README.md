@@ -8,3 +8,4 @@ A example of pytorch custom dataset.
 3. Append "image pathname" or "None" to labels.csv based on the results of if image exist or not.
 4. Append breed ids to labels.csv, which are the mapping result of breed information and dictionary.
 5.Save image pathanme and breed ids as npy file.
+
