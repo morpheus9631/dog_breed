@@ -19,12 +19,10 @@ data/processed/*
 data/raw/*
 !data/raw/*.csv
 
-data/pretrained-pytorch-models
-!data/processed/*.zip
+data/pretrained-pytorch-models/*.zip
 
 # Models
-models/*
-!modles/resnet18-5c106cde.pth
+models/*.pth
 
 # vsccode
 .vscode/
