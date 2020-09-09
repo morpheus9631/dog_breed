@@ -23,7 +23,7 @@ data/pretrained-pytorch-models
 !data/processed/*.zip
 
 # Models
-models/
+models/*
 !modles/resnet18-5c106cde.pth
 
 # vsccode
