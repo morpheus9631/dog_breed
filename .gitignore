@@ -9,12 +9,20 @@ configs/__pycache__/
 
 # Data:
 data/*
-!data/download.txt
 !data/*/
+!data/download.txt
+
 data/processed/*
 !data/processed/*.npy
+
 data/raw/*
 !data/raw/*.csv
+
+data/pretrained-pytorch-models
+!data/processed/*.zip
+
+# Models
+models/
 
 # vsccode
 .vscode/
