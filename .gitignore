@@ -6,6 +6,7 @@ configs/__pycache__/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+Untitled.ipynb
 
 # Data:
 data/*
@@ -23,6 +24,7 @@ data/pretrained-pytorch-models
 
 # Models
 models/
+!modles/resnet18-5c106cde.pth
 
 # vsccode
 .vscode/
