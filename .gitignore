@@ -14,12 +14,13 @@ data/*
 !data/download.txt
 
 data/processed/*
+!data/processed/*.csv
 !data/processed/*.npy
 
 data/raw/*
 !data/raw/*.csv
 
-data/pretrained-pytorch-models/*.zip
+data/*.zip
 
 # Models
 models/*.pth
