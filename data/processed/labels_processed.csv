@@ -1,4 +1,4 @@
-id,breed,ranked,image
+id,breed,breed_id,image
 000bec180eb18c7604dcecc8fe0dba07,boston_bull,43,D:\GitWork\dog_breed\data\raw\train\000bec180eb18c7604dcecc8fe0dba07.jpg
 001513dfcb2ffafc82cccf4d8bbaba97,dingo,73,D:\GitWork\dog_breed\data\raw\train\001513dfcb2ffafc82cccf4d8bbaba97.jpg
 001cdf01b096e06d78e9e5112d419397,pekinese,95,D:\GitWork\dog_breed\data\raw\train\001cdf01b096e06d78e9e5112d419397.jpg
