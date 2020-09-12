@@ -96,8 +96,32 @@ def createDataList(df, frac_for_train=0.8, disp=False):
         'valid': { 'images': valid_imgs, 'labels': valid_lbls }
     }
 
+def saveToNpzFile(path, train_imgs, train_lbls, valid_imgs, valid_lbls):
+    phase = ['train', 'valid']
+    types = ['images', 'labels']
+
+    fnames = ['{}_data.npz'.format(x) for x in phase]
+    data = [[train_imgs, train_lbls], [valid_imgs, valid_lbls]]
+
+    print('Process start...')
+    result = {}
+    for i in range(len(fnames)):
+        f_abspath = join(path, fnames[i])
+        print("'{}' processing...".format(f_abspath))
+        args = { types[0]: data[i][0], types[1]: data[i][1] }
+        np.savez(f_abspath, **args)
+        result[f_abspath] = exists(f_abspath)
+    print('Process end.')
+    return result
 
 
+def showNpzFile(f_abspath, num=10):
+    load_data = np.load(f_abspath, allow_pickle=True)
+
+    print('Images:')
+    print('\n'.join('  '+load_data['images'][:num]))
+    print('Labels:\n  {}'.format(load_data['labels'][:num]))
+    return
 
 
 def main():
@@ -140,20 +164,15 @@ def main():
     valid_imgs = data['valid']['images'] 
     valid_lbls = data['valid']['labels']
 
+    # Verify npz file
+    print('\nWrite to npz files:')
+    results = saveToNpzFile(ProcPath, train_imgs, train_lbls, valid_imgs, valid_lbls)
 
-
-
-    # print('\nProcessed:')
-    # csv_bd_proc = 'breeds_processed.csv'
-    # bd_proc_abspath = join(ProcPath, csv_bd_proc)
-    # print("  Breeds: '{}'".format(bd_proc_abspath))
-
-    # csv_lbls_proc = 'labels_processed.csv'
-    # lbls_proc_abspath = join(ProcPath, csv_lbls_proc)
-    # print("  Labels: '{}'".format(lbls_proc_abspath))
-
-    FRAC_FOR_TRAIN = 0.8  
-
+    print('\nNPZ files:')
+    for f_abspath in results:
+        outstr = 'exist.' if exists(f_abspath) else 'not exist...'
+        print("\n'{}' {}".format(f_abspath, outstr))
+        showNpzFile(f_abspath)
 
 if __name__=='__main__':
     print('torch: ', torch.__version__)
