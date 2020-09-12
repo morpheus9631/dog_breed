@@ -10,6 +10,7 @@ _C.DATA = CN()
 _C.DATA.PATH = "D:\\Dataset\\dog_breed\\data\\"
 _C.DATA.CSV_LABELS = "laebls.csv"
 _C.DATA.CSV_SAMPLE_SUBMISSION = "sample_submission.csv"
+
 _C.DATA.PATH_RAW  = "D:\\Dataset\\dog_breed\\data\\raw\\"
 _C.DATA.DIR_TEST = "test"
 _C.DATA.DIR_TRAIN = "train"

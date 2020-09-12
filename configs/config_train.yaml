@@ -7,14 +7,15 @@ DATA:
   PATH: "D:\\Dataset\\dog_breed\\data\\"
   DIR_TEST: "test"
   DIR_TRAIN: "train"
+
   PATH_RAW:  "D:\\Dataset\\dog_breed\\data\\raw\\"
   CSV_LABELS: "laebls.csv"
   CSV_SAMPLE_SUBMISSION: "sample_submission.csv"
 
 PROCESSED:
   PATH: "D:\\Dataset\\dog_breed\\data\\processed\\"
-  CSV_BREEDS: "processed_breeds.csv"
-  CSV_LABELS: "processed_labels.csv"
+  CSV_BREEDS: "breeds_processed.csv"
+  CSV_LABELS: "labels_processed.csv"
   TRAIN_DATA: "train_data.npz"
   VALID_DATA: "valid_data.npz"
 
