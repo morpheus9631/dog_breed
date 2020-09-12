@@ -1,12 +1,31 @@
 # config_train.yaml
 
 WORK:
-  PATH: '/home/user/work/dog_breed/'
-  LABELS_FNAME: "labels.csv"
+  PATH: &work_path "/home/user/work/dog_breed/"
               
 DATA:
   PATH: "/home/user/work/dog_breed/data/"
-  FRAC_FOR_TRAIN: 0.8
+  PATH_RAW:  "/home/user/work/dog_breed/data/raw/"
+  DIR_TEST:  "test"
+  DIR_TRAIN: "train"
+  CSV_LABELS: "laebls.csv"
+  CSV_SAMPLE_SUBMISSION: "sample_submission.csv"
+
+PROCESSED:
+  PATH: "/home/user/work/dog_breed/data/processed/"
+  CSV_BREEDS: "processed_breeds.csv"
+  CSV_LABELS: "processed_labels.csv"
+  TRAIN_DATA: "train_data.npz"
+  VALID_DATA: "valid_data.npz"
+
+PRETRAINED:
+  PATH: "/home/user/work/dog_breed/models/"
+  FNAME: 'resnet50-19c8e357.pth'
 
 TRAIN:
-  NUM_EPOCHS: 25  
+  FRAC_FOR_TRAIN: 0.8
+  NUM_BREED_CLASSES: 16
+  BATCH_SIZE: 6
+  LEARNING_RATE: 0.001
+  MOMENTUM: 0.9
+  NUM_EPOCHS: 2

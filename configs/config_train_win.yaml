@@ -1,10 +1,31 @@
 # config_train.yaml
 
 WORK:
-  ROOT_PATH: "D:\\GitWork\\dog_breed\\"
-  LABELS_FNAME: "labels.csv"
-
+  PATH: "D:\\GitWork\\dog_breed\\"
               
 DATA:
-  ROOT_PATH: "D:\\Dataset\\dog_breed\\"
+  PATH: "D:\\Dataset\\dog_breed\\data\\"
+  RAW_PATH:  "D:\\Dataset\\dog_breed\\data\\raw\\"
+  TEST_DIR: "test"
+  TRAIN_DIR: "train"
+  LABELS_CSV: "laebls.csv"
+  SAMPLE_SUBMISSION_CSV: "sample_submission.csv"
+
+PROCESSED:
+  PATH: "D:\\Dataset\\dog_breed\\data\\processed\\"
+  BREEDS_CSV: "processed_breeds.csv"
+  LABELS_CSV: "processed_labels.csv"
+  TRAIN_DATA: "train_data.npz"
+  VALID_DATA: "valid_data.npz"
+
+PRETRAINED:
+  PATH: "D:\\GitWork\\dog_breed\\models\\"
+  FNAME: 'resnet50-19c8e357.pth'
+
+TRAIN:
   FRAC_FOR_TRAIN: 0.8
+  NUM_BREED_CLASSES: 16
+  BATCH_SIZE: 6
+  LEARNING_RATE: 0.001
+  MOMENTUM: 0.9
+  NUM_EPOCHS: 2
