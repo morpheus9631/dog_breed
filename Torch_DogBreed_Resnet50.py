@@ -36,7 +36,7 @@ def parse_args():
 
 
 def main():
-    print("PyTorch Version: ",torch.__version__)
+    print("\nPyTorch Version: ",torch.__version__)
     print("Torchvision Version: ",torchvision.__version__)
 
     args = parse_args()
