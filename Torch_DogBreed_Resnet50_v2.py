@@ -36,42 +36,86 @@ def parse_args():
 
 def getParams(cfg):
     params = {}
-    params['RootPath'] = cfg.WORK.PATH
-    params['RawDataPath'] = cfg.DATA.PATH_RAW
-    params['TestImgPath'] = join(cfg.DATA.PATH_RAW, cfg.DATA.DIR_TEST)
-    params['TrainImgPath'] = join(cfg.DATA.PATH_RAW, cfg.DATA.DIR_TRAIN)
-    params['CsvLabels'] = join(cfg.DATA.PATH_RAW, cfg.DATA.CSV_LABELS)
+    params['BatchSize'] = cfg.TRAIN.BATCH_SIZE
+    # params['CsvLabels'] = join(cfg.DATA.PATH_RAW, cfg.DATA.CSV_LABELS)
+    params['FracForTrain'] = cfg.TRAIN.FRAC_FOR_TRAIN
+    params['LearningRate'] = cfg.TRAIN.LEARNING_RATE
+    params['NumPopularClasses'] = cfg.TRAIN.NUM_POPULAR_CLASSES
+    params['NumEpochs'] = cfg.TRAIN.NUM_EPOCHS
+    params['PretrainedModel'] = join(cfg.PRETRAINED.PATH, cfg.PRETRAINED.FNAME)
     params['ProcessedBreeds'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.CSV_BREEDS)
     params['ProcessedLabels'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.CSV_LABELS)
+    params['RawDataPath'] = cfg.DATA.PATH_RAW
+    params['RootPath'] = cfg.WORK.PATH
+    params['TestImgPath'] = join(cfg.DATA.PATH_RAW, cfg.DATA.DIR_TEST)
+    params['TrainImgPath'] = join(cfg.DATA.PATH_RAW, cfg.DATA.DIR_TRAIN)
     params['TrainData'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.TRAIN_DATA)
     params['ValidData'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.VALID_DATA)
-    params['PretrainedModel'] = join(cfg.PRETRAINED.PATH, cfg.PRETRAINED.FNAME)
-    params['FracForTrain'] = cfg.TRAIN.FRAC_FOR_TRAIN
-    params['NumBreedClasses'] = cfg.TRAIN.NUM_BREED_CLASSES
-    params['BatchSize'] = cfg.TRAIN.BATCH_SIZE
-    params['LearningRate'] = cfg.TRAIN.LEARNING_RATE
-    params['NumEpochs'] = cfg.TRAIN.NUM_EPOCHS
     return params
 
+def getMostPopularBreeds(df, numClasses=16):
+    selected_breed_list = list(df['breed'][:numClasses] )
+    return (selected_breed_list)
 
-def loadMostPopularBreeds(num=16):
-    pass
-
+def df2dict(df, direc='fw'):
+    dic = {}
+    for i, row in df.iterrows():
+        if direc == 'fw':   # fw = forward
+            dic[row['breed']] = row['breed_id']
+        elif direc == 'bw': # bw = backward
+            key = str(row['breed_id'])
+            dic[key] = row['breed']
+    return dic
 
 def main():
     print("\nPyTorch Version: ",torch.__version__)
     print("Torchvision Version: ",torchvision.__version__)
 
+    # Read arguments
     args = parse_args()
     print(args)
 
+    # Read configurations 
     CFG = get_cfg_defaults()
     CFG.merge_from_file(args.cfg)
     CFG.freeze()
     print('\n', CFG)
 
     Params = getParams(CFG)
-    print('\nParameters:'); print(json.dumps(Params, indent=4))
+    print('\nParameters:'); print(json.dumps(Params, indent=2))
+
+    # Read breed information from precessed breed csv file
+    csv_proc_breeds = Params['ProcessedBreeds']
+    df_breeds = pd.read_csv(csv_proc_breeds)
+    print('\nBreeds info:', df_breeds.info())
+    print('\nBreeds head:', df_breeds.head())
+
+    # Get most popular breeds
+    NumClasses = Params['NumPopularClasses']
+    selected_breeds = getMostPopularBreeds(df_breeds, NumClasses)
+    print('\nSelected breeds: [\n  {}\n]'.format('\n  '.join(selected_breeds)))
+
+    df_selected_breeds = df_breeds[df_breeds['breed'].isin(selected_breeds)]
+
+    # Build breed dictionary, both forward and backward
+    breed_dic_fw = df2dict(df_selected_breeds)
+    print('\nBreed dict (forward):')
+    print(json.dumps(breed_dic_fw, indent=2))
+
+    breed_dic_bw = df2dict(df_selected_breeds, 'bw')
+    print('\nBreed dict (backward):')
+    print(json.dumps(breed_dic_bw, indent=2))
+
+    # Read labels information from csv file
+    csv_prco_labels = Params['ProcessedLabels']
+    df_labels = pd.read_csv(csv_prco_labels)
+    print('\nLabels info:', df_labels.info())
+    print('\nLabels head:', df_labels.head())
+
+    selected_data = df_labels[df_labels['breed'].isin(selected_breeds)]
+    print('\nSelected labels:');print(selected_data[:10])
+
+
 
 
 

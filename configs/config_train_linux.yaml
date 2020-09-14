@@ -8,7 +8,7 @@ DATA:
   PATH_RAW:  "/home/user/work/dog_breed/data/raw/"
   DIR_TEST:  "test"
   DIR_TRAIN: "train"
-  CSV_LABELS: "laebls.csv"
+  CSV_LABELS: "labels.csv"
   CSV_SAMPLE_SUBMISSION: "sample_submission.csv"
 
 PROCESSED:
@@ -24,7 +24,7 @@ PRETRAINED:
 
 TRAIN:
   FRAC_FOR_TRAIN: 0.8
-  NUM_BREED_CLASSES: 16
+  NUM_POPULAR_CLASSES: 16
   BATCH_SIZE: 6
   LEARNING_RATE: 0.001
   MOMENTUM: 0.9

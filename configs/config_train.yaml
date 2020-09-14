@@ -4,16 +4,16 @@ WORK:
   PATH: &work_path "D:\\GitWork\\dog_breed\\"
               
 DATA:
-  PATH: "D:\\Dataset\\dog_breed\\data\\"
+  PATH: "D:\\GitWork\\dog_breed\\data\\"
   DIR_TEST: "test"
   DIR_TRAIN: "train"
 
-  PATH_RAW:  "D:\\Dataset\\dog_breed\\data\\raw\\"
-  CSV_LABELS: "laebls.csv"
+  PATH_RAW:  "D:\\GitWork\\dog_breed\\data\\raw\\"
+  CSV_LABELS: "labels.csv"
   CSV_SAMPLE_SUBMISSION: "sample_submission.csv"
 
 PROCESSED:
-  PATH: "D:\\Dataset\\dog_breed\\data\\processed\\"
+  PATH: "D:\\GitWork\\dog_breed\\data\\processed\\"
   CSV_BREEDS: "breeds_processed.csv"
   CSV_LABELS: "labels_processed.csv"
   TRAIN_DATA: "train_data.npz"
@@ -25,7 +25,7 @@ PRETRAINED:
 
 TRAIN:
   FRAC_FOR_TRAIN: 0.8
-  NUM_BREED_CLASSES: 16
+  NUM_POPULAR_CLASSES: 16
   BATCH_SIZE: 6
   LEARNING_RATE: 0.001
   MOMENTUM: 0.9
