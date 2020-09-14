@@ -73,46 +73,25 @@ def writeToCsv_ProcessedLabels(path, df):
         msg = "'{}' saved.".format(f_abspath)
     return exists(f_abspath), msg
 
-def createDataList(df, frac_for_train=0.8, disp=False):
-    total_rows = df.shape[0]
-    train_len = int(float(frac_for_train) * float(total_rows))
-    # print('Train len: ', train_len)
 
-    train_imgs = df['image'][:train_len]
-    train_lbls = df['breed_id'][:train_len]
+def writeToNpzFile(path, df, types='breeds'):
+    if types == 'breeds':
+        fname = 'breeds_processed.npz'
+    elif types == 'labels':
+        fname = 'labels_processed.npz'
+    else:
+        raise "Types must be 'breeds' or 'labels'..."
 
-    valid_imgs = df['image'][train_len:]
-    valid_lbls = df['breed_id'][train_len:]
-
-    if disp:
-        print('\nTotal rows:', total_rows)
-        formatter = '{} size: images ({}), lables ({})'
-        print(formatter.format('train', len(train_imgs), len(train_lbls)))
-        print(formatter.format('valid', len(valid_imgs), len(valid_imgs)))
-
-    return {
-        'train': { 'images': train_imgs, 'labels': train_lbls },
-        'valid': { 'images': valid_imgs, 'labels': valid_lbls }
-    }
-
-def saveToNpzFile(path, train_imgs, train_lbls, valid_imgs, valid_lbls):
-    phase = ['train', 'valid']
-    types = ['images', 'labels']
-
-    fnames = ['{}_data.npz'.format(x) for x in phase]
-    data = [[train_imgs, train_lbls], [valid_imgs, valid_lbls]]
-
-    print('Process start...')
-    result = {}
-    for i in range(len(fnames)):
-        f_abspath = join(path, fnames[i])
-        print("'{}' processing...".format(f_abspath))
-        args = { types[0]: data[i][0], types[1]: data[i][1] }
+    f_abspath = join(path, fname)
+    isExist = exists(f_abspath)
+    if isExist:
+        msg = "'{}' already exist, skipped...".format(f_abspath)
+    else:
+        col_names = df.columns.tolist()
+        args = { x: df[x] for x in col_names }
         np.savez(f_abspath, **args)
-        result[f_abspath] = exists(f_abspath)
-    print('Process end.')
-    return result
-
+        msg = "'{}' saved.".format(f_abspath)
+    return exists(f_abspath), msg
 
 def showNpzFile(f_abspath, num=10):
     load_data = np.load(f_abspath, allow_pickle=True)
@@ -146,6 +125,10 @@ def main():
     isExist, msg = writeToCsv_BreedIds(ProcPath, df_breeds)
     print('\n',msg)
 
+    # Write breed dictionary to npz
+    isExist, msg = writeToNpzFile(ProcPath, df_breeds, 'breeds')
+    print('\n',msg, isExist)
+
     # Convert labels to images path and breed id 
     img_path = join(RawPath, 'train')
     df_proc_lbls = createProcessedLabels(img_path, df_labels, df_breeds)
@@ -155,23 +138,10 @@ def main():
     isExist, msg = writeToCsv_ProcessedLabels(ProcPath, df_proc_lbls)
     print('\n',msg)
 
-    # Build data lists
-    FRAC_FOR_TRAIN = 0.8
-    data = createDataList(df_proc_lbls, FRAC_FOR_TRAIN, True)
-    train_imgs = data['train']['images']
-    train_lbls = data['train']['labels']
-    valid_imgs = data['valid']['images'] 
-    valid_lbls = data['valid']['labels']
+    # Write labels to npz
+    isExist, msg = writeToNpzFile(ProcPath, df_proc_lbls, 'labels')
+    print('\n',msg, isExist)
 
-    # Verify npz file
-    print('\nWrite to npz files:')
-    results = saveToNpzFile(ProcPath, train_imgs, train_lbls, valid_imgs, valid_lbls)
-
-    print('\nNPZ files:')
-    for f_abspath in results:
-        outstr = 'exist.' if exists(f_abspath) else 'not exist...'
-        print("\n'{}' {}".format(f_abspath, outstr))
-        showNpzFile(f_abspath)
 
 if __name__=='__main__':
     print('torch: ', torch.__version__)

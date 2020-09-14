@@ -40,6 +40,7 @@ def getParams(cfg):
     params['FracForTrain'] = cfg.TRAIN.FRAC_FOR_TRAIN
     params['NumClasses'] = cfg.TRAIN.NUM_CLASSES
     params['PretrainedModel'] = join(cfg.PRETRAINED.PATH, cfg.PRETRAINED.FNAME)
+    params['ProcessedPath'] = cfg.PROCESSED.PATH
     params['ProcessedBreeds'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.CSV_BREEDS)
     params['ProcessedLabels'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.CSV_LABELS)
     params['LearningRate'] = cfg.TRAIN.LEARNING_RATE
@@ -47,6 +48,7 @@ def getParams(cfg):
     params['StepSize'] = cfg.TRAIN.STEP_SIZE
     params['Gamma'] = cfg.TRAIN.GAMMA
     params['NumEpochs'] = cfg.TRAIN.NUM_EPOCHS
+
     # params['RawDataPath'] = cfg.DATA.PATH_RAW
     # params['RootPath'] = cfg.WORK.PATH
     # params['TestImgPath'] = join(cfg.DATA.PATH_RAW, cfg.DATA.DIR_TEST)
@@ -90,18 +92,29 @@ def getTrainAndValidData(selectedData, fracForTrain=0.8):
 
 class myDataset(Dataset):
     
-    def __init__(self, data, phase='train', transform=None):
-        if phase == 'train':
-            self.images = data['train'][0]
-            self.labels = data['train'][1]
-        elif phase == 'valid':
-            self.images = data['valid'][0]
-            self.labels = data['valid'][1]
-        else:
-            raise "Phase must be 'train' or 'valid'"
+    npzFiles = { 
+        'train': 'train_data.npz', 
+        'valid': 'valid_data.npz' 
+    }
+
+    def __init__(self, path, selected_bids, phase='train', transform=None):
+        if phase not in self.npzFiles.keys():
+            raise "Phase must be 'train' or 'valid'..."
+
+        fname = self.npzFiles[phase]
+        load_data = np.load(join(path, fname), allow_pickle=True)
+        col_names = load_data.files
+
+        df = pd.DataFrame(data=[load_data[x] for x in col_names]).T
+        df.columns = load_data.files
+
+        df_selected = df[df['labels'].isin(selected_bids)]
+
+        self.images = df_selected['images']
+        self.labels = df_selected['labels']
 
         self.transform = transform
-        self.len = len(self.images)
+        self.len = len(df_selected)
 
     def __getitem__(self, index):
         img_path = self.images[index]
@@ -229,27 +242,6 @@ def main():
     # print('\nBreed dict (backward):')
     # print(json.dumps(breed_dic_bw, indent=2))
 
-    # Read labels information from csv file
-    csv_prco_labels = Params['ProcessedLabels']
-    df_labels = pd.read_csv(csv_prco_labels)
-    print('\nLabels info:'); print(df_labels.info())
-    print('\nLabels head:'); print(df_labels.head())
-
-    selected_data = df_labels[df_labels['breed_id'].isin(selected_bids)]
-    print('\nTotal rows:', len(selected_data))
-    print('\nSelected data:');print(selected_data.head())
-
-    # Get train and valid data arrays
-    frac_for_train = Params['FracForTrain']
-    selected_data = getTrainAndValidData(selected_data, frac_for_train)
-    train_imgs = selected_data['train'][0]
-    train_lbls = selected_data['train'][1]
-    valid_imgs = selected_data['valid'][0]
-    valid_lbls = selected_data['valid'][1]
-    formatter = '{} data: images ({}), labels ({})'
-    print(formatter.format('\nTrain', len(train_imgs), len(train_lbls)))
-    print(formatter.format('Valid', len(valid_imgs), len(valid_lbls)))
-
     # Create Dataset
     # Normalize
     normalize = transforms.Normalize(
@@ -264,64 +256,67 @@ def main():
         normalize
     ])
 
-    trainSet = myDataset(selected_data, transform=transform)
-    validSet = myDataset(selected_data, phase='valid', transform=transform)
+    ProcPath = Params['ProcessedPath']
+    trainSet = myDataset(ProcPath, selected_bids, transform=transform)
+    # validSet = myDataset(ProcPath, selected_bids, phase='valid', transform=transform)
 
-    BatchSize = Params['BatchSize']
-    trainLoader = DataLoader(trainSet, batch_size=BatchSize, shuffle=True)
-    validLoader = DataLoader(validSet, batch_size=BatchSize, shuffle=False)
+    # BatchSize = Params['BatchSize']
+    # print('\nBatch size:', BatchSize)
 
-    imgs, lbls = next(iter(trainLoader))
-    print('\nImages size: ', imgs.size())
-    print('Labels size: ', lbls.size())
-    print('\nImage shape:', imgs[0].shape)
-    print('Label shape:', lbls[0].shape)
+    # trainLoader = DataLoader(trainSet, batch_size=BatchSize, shuffle=True)
+    # validLoader = DataLoader(validSet, batch_size=BatchSize, shuffle=False)
 
-    dataset_sizes = { 'train': len(trainSet), 'valid': len(validSet) }
-    print('\nDataset sizes:', dataset_sizes)
+    # imgs, lbls = next(iter(trainLoader))
+    # print('\nImages size: ', imgs.size())
+    # print('Labels size: ', lbls.size())
+    # print('\nImage shape:', imgs[0].shape)
+    # print('Label shape:', lbls[0].shape)
 
-    # Use GPU
-    use_gpu = torch.cuda.is_available()
-    device = torch.device("cuda:0" if use_gpu else "cpu")
-    print(); print(device)
+    # dataset_sizes = { 'train': len(trainSet), 'valid': len(validSet) }
+    # print('\nDataset sizes:', dataset_sizes)
 
-    # Set Models
-    resnet = models.resnet50(pretrained=True)
+    # # Use GPU
+    # use_gpu = torch.cuda.is_available()
+    # device = torch.device("cuda:0" if use_gpu else "cpu")
+    # print(); print(device)
 
-    # # Load pretrained model
-    pre_model_path = Params['PretrainedModel']
-    pre_model_wts = torch.load(pre_model_path)
-    resnet.load_state_dict(pre_model_wts)
+    # # Set Models
+    # resnet = models.resnet50(pretrained=True)
 
-    # freeze all model parameters
-    for param in resnet.parameters():
-        param.requires_grad = False
+    # # # Load pretrained model
+    # pre_model_path = Params['PretrainedModel']
+    # pre_model_wts = torch.load(pre_model_path)
+    # resnet.load_state_dict(pre_model_wts)
 
-    # new final layer with 16 classes
-    num_ftrs = resnet.fc.in_features
-    resnet.fc = nn.Linear(num_ftrs, NumClasses)
-    if use_gpu:
-        resnet = resnet.cuda()
+    # # freeze all model parameters
+    # for param in resnet.parameters():
+    #     param.requires_grad = False
+
+    # # new final layer with 16 classes
+    # num_ftrs = resnet.fc.in_features
+    # resnet.fc = nn.Linear(num_ftrs, NumClasses)
+    # if use_gpu:
+    #     resnet = resnet.cuda()
     
-    criterion = nn.CrossEntropyLoss()
+    # criterion = nn.CrossEntropyLoss()
 
-    lr = Params['LearningRate']
-    momentum = Params['Momentum']
-    step_size = Params['StepSize']
-    gamma = Params['Gamma']
+    # lr = Params['LearningRate']
+    # momentum = Params['Momentum']
+    # step_size = Params['StepSize']
+    # gamma = Params['Gamma']
 
-    optimizer = optim.SGD(resnet.fc.parameters(), lr, momentum)
-    exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size, gamma)
+    # optimizer = optim.SGD(resnet.fc.parameters(), lr, momentum)
+    # exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size, gamma)
 
-    dataLoaders = { 'train':trainLoader, 'valid':validLoader }
+    # dataLoaders = { 'train':trainLoader, 'valid':validLoader }
 
-    # Training and Validate 
-    num_epochs = Params['NumEpochs']
-    start_time = time.time()
-    model = train_model(
-        dataLoaders, resnet, criterion, optimizer, exp_lr_scheduler, num_epochs
-    )
-    print('Training time: {:10f} minutes'.format((time.time()-start_time)/60))    
+    # # Training and Validate 
+    # num_epochs = Params['NumEpochs']
+    # start_time = time.time()
+    # # model = train_model(
+    # #     dataLoaders, resnet, criterion, optimizer, exp_lr_scheduler, num_epochs
+    # # )
+    # print('Training time: {:10f} minutes'.format((time.time()-start_time)/60))    
 
 
 if __name__=='__main__':
