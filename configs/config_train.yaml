@@ -14,11 +14,9 @@ DATA:
 
 PROCESSED:
   PATH: "D:\\GitWork\\dog_breed\\data\\processed\\"
-  CSV_BREEDS: "breeds_processed.csv"
-  CSV_LABELS: "labels_processed.csv"
-  TRAIN_DATA_FILE: "train_data.npz"
-  VALID_DATA_FILE: "valid_data.npz"
-
+  FNAME_BREEDS: "breeds_processed"
+  FNAME_LABELS: "labels_processed"
+  
 PRETRAINED:
   PATH: "D:\\GitWork\\dog_breed\\models\\"
   FNAME: 'resnet50-19c8e357.pth'

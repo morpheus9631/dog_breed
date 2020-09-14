@@ -40,22 +40,29 @@ def getParams(cfg):
     params['FracForTrain'] = cfg.TRAIN.FRAC_FOR_TRAIN
     params['NumClasses'] = cfg.TRAIN.NUM_CLASSES
     params['PretrainedModel'] = join(cfg.PRETRAINED.PATH, cfg.PRETRAINED.FNAME)
-    params['ProcessedPath'] = cfg.PROCESSED.PATH
-    params['ProcessedBreeds'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.CSV_BREEDS)
-    params['ProcessedLabels'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.CSV_LABELS)
+    # params['ProcessedPath'] = cfg.PROCESSED.PATH
+    params['ProcessedBreeds'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.FNAME_BREEDS+'.npz')
+    params['ProcessedLabels'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.FNAME_LABELS+'.npz')
     params['LearningRate'] = cfg.TRAIN.LEARNING_RATE
     params['Momentum'] = cfg.TRAIN.MOMENTUM
     params['StepSize'] = cfg.TRAIN.STEP_SIZE
     params['Gamma'] = cfg.TRAIN.GAMMA
     params['NumEpochs'] = cfg.TRAIN.NUM_EPOCHS
-
     # params['RawDataPath'] = cfg.DATA.PATH_RAW
     # params['RootPath'] = cfg.WORK.PATH
     # params['TestImgPath'] = join(cfg.DATA.PATH_RAW, cfg.DATA.DIR_TEST)
     # params['TrainImgPath'] = join(cfg.DATA.PATH_RAW, cfg.DATA.DIR_TRAIN)
-    # params['TrainDataFile'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.TRAIN_DATA_FILE)
-    # params['ValidDataFile'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.VALID_DATA_FILE)
     return params
+
+def readNpzFile(f_abspath):
+    load_data = np.load(join(f_abspath), allow_pickle=True)
+        
+    col_names = load_data.files
+    df = pd.DataFrame.from_dict(
+        {col: load_data[col] for col in col_names}
+    )
+    df.columns = col_names
+    return df
 
 def getMostPopularBreeds(df, numClasses=16):
     selected_breeds = list(df['breed'][:numClasses] )
@@ -91,27 +98,26 @@ def getTrainAndValidData(selectedData, fracForTrain=0.8):
     } 
 
 class myDataset(Dataset):
-    
-    npzFiles = { 
-        'train': 'train_data.npz', 
-        'valid': 'valid_data.npz' 
-    }
 
-    def __init__(self, path, selected_bids, phase='train', transform=None):
-        if phase not in self.npzFiles.keys():
-            raise "Phase must be 'train' or 'valid'..."
+    Fname = 'labels_processed.npz'
 
-        fname = self.npzFiles[phase]
-        load_data = np.load(join(path, fname), allow_pickle=True)
-        col_names = load_data.files
+    def __init__(self, f_abspath, selected_bids, transform=None):
+        fname = self.Fname
+        load_data = np.load(f_abspath, allow_pickle=True)
+        
+        col_names = list(load_data.files)
+        df = pd.DataFrame.from_dict(
+            {col: load_data[col] for col in col_names}
+        )
+        # print(col_names)
+        df.columns = col_names
 
-        df = pd.DataFrame(data=[load_data[x] for x in col_names]).T
-        df.columns = load_data.files
+        df_selected = df[df['breed_id'].isin(selected_bids)]
+        # print(df_selected.info())
+        # print(df_selected.head())
 
-        df_selected = df[df['labels'].isin(selected_bids)]
-
-        self.images = df_selected['images']
-        self.labels = df_selected['labels']
+        self.images = df_selected['image']
+        self.labels = df_selected['breed_id']
 
         self.transform = transform
         self.len = len(df_selected)
@@ -220,9 +226,9 @@ def main():
     Params = getParams(CFG)
     print('\nParameters:'); print(json.dumps(Params, indent=2))
 
-    # Read breed information from precessed breed csv file
-    csv_proc_breeds = Params['ProcessedBreeds']
-    df_breeds = pd.read_csv(csv_proc_breeds)
+    # # Read breed information from precessed breed file
+    npz_breeds = Params['ProcessedBreeds']
+    df_breeds = readNpzFile(npz_breeds)
     print('\nBreeds info:'); print(df_breeds.info())
     print('\nBreeds head:'); print(df_breeds.head())
 
@@ -230,6 +236,7 @@ def main():
     NumClasses = Params['NumClasses']
     selected_breeds, selected_bids = getMostPopularBreeds(df_breeds, NumClasses)
     print('\nSelected breeds: [\n  {}\n]'.format('\n  '.join(selected_breeds)))
+    print('\nSelected breed ids:\n  {}'.format(selected_bids))
 
     df_selected_breeds = df_breeds[df_breeds['breed'].isin(selected_breeds)]
 
@@ -239,10 +246,9 @@ def main():
     print(json.dumps(breed_dic_fw, indent=2))
 
     breed_dic_bw = df2dict(df_selected_breeds, 'bw')
-    # print('\nBreed dict (backward):')
-    # print(json.dumps(breed_dic_bw, indent=2))
+    print('\nBreed dict (backward):')
+    print(json.dumps(breed_dic_bw, indent=2))
 
-    # Create Dataset
     # Normalize
     normalize = transforms.Normalize(
         mean = [0.485, 0.456, 0.406],
@@ -256,9 +262,10 @@ def main():
         normalize
     ])
 
-    ProcPath = Params['ProcessedPath']
-    trainSet = myDataset(ProcPath, selected_bids, transform=transform)
-    # validSet = myDataset(ProcPath, selected_bids, phase='valid', transform=transform)
+    # Build dataset
+    npz_labels = Params['ProcessedLabels']
+    trainSet = myDataset(npz_labels, selected_bids, transform=transform)
+    # validSet = myDataset(npz_labels, selected_bids, transform=transform)
 
     # BatchSize = Params['BatchSize']
     # print('\nBatch size:', BatchSize)

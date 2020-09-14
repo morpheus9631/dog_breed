@@ -40,8 +40,8 @@ def getParams(cfg):
     params['FracForTrain'] = cfg.TRAIN.FRAC_FOR_TRAIN
     params['NumClasses'] = cfg.TRAIN.NUM_CLASSES
     params['PretrainedModel'] = join(cfg.PRETRAINED.PATH, cfg.PRETRAINED.FNAME)
-    params['ProcessedBreeds'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.CSV_BREEDS)
-    params['ProcessedLabels'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.CSV_LABELS)
+    params['ProcessedBreeds'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.FNAME_BREEDS+'.csv')
+    params['ProcessedLabels'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.FNAME_LABELS+'.csv')
     params['LearningRate'] = cfg.TRAIN.LEARNING_RATE
     params['Momentum'] = cfg.TRAIN.MOMENTUM
     params['StepSize'] = cfg.TRAIN.STEP_SIZE

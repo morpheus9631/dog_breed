@@ -17,10 +17,8 @@ _C.DATA.DIR_TRAIN = "train"
 
 _C.PROCESSED = CN()
 _C.PROCESSED.PATH  = "D:\\GitWork\\dog_breed\\data\\processed\\"
-_C.PROCESSED.CSV_BREEDS = "breeds_processed.csv"
-_C.PROCESSED.CSV_LABELS = "labels_processed.csv"
-_C.PROCESSED.TRAIN_DATA_FILE = "train_data.npz"
-_C.PROCESSED.VALID_DATA_FILE = "valid_data.npz"
+_C.PROCESSED.FNAME_BREEDS = "breeds_processed"
+_C.PROCESSED.FNAME_LABELS = "labels_processed"
 
 _C.PRETRAINED = CN()
 _C.PRETRAINED.PATH  = "D:\\GitWork\\dog_breed\\models\\"
