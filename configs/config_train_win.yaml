@@ -15,8 +15,8 @@ PROCESSED:
   PATH: "D:\\GitWork\\dog_breed\\data\\processed\\"
   BREEDS_CSV: "processed_breeds.csv"
   LABELS_CSV: "processed_labels.csv"
-  TRAIN_DATA: "train_data.npz"
-  VALID_DATA: "valid_data.npz"
+  TRAIN_DATA_FILE: "train_data.npz"
+  VALID_DATA_FILE: "valid_data.npz"
 
 PRETRAINED:
   PATH: "D:\\GitWork\\dog_breed\\models\\"
