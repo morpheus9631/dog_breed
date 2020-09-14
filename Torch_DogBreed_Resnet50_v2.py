@@ -38,18 +38,21 @@ def getParams(cfg):
     params = {}
     params['BatchSize'] = cfg.TRAIN.BATCH_SIZE
     params['FracForTrain'] = cfg.TRAIN.FRAC_FOR_TRAIN
-    params['LearningRate'] = cfg.TRAIN.LEARNING_RATE
-    params['NumPopularClasses'] = cfg.TRAIN.NUM_POPULAR_CLASSES
-    params['NumEpochs'] = cfg.TRAIN.NUM_EPOCHS
+    params['NumClasses'] = cfg.TRAIN.NUM_CLASSES
     params['PretrainedModel'] = join(cfg.PRETRAINED.PATH, cfg.PRETRAINED.FNAME)
     params['ProcessedBreeds'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.CSV_BREEDS)
     params['ProcessedLabels'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.CSV_LABELS)
-    params['RawDataPath'] = cfg.DATA.PATH_RAW
-    params['RootPath'] = cfg.WORK.PATH
-    params['TestImgPath'] = join(cfg.DATA.PATH_RAW, cfg.DATA.DIR_TEST)
-    params['TrainImgPath'] = join(cfg.DATA.PATH_RAW, cfg.DATA.DIR_TRAIN)
-    params['TrainDataFile'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.TRAIN_DATA_FILE)
-    params['ValidDataFile'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.VALID_DATA_FILE)
+    params['LearningRate'] = cfg.TRAIN.LEARNING_RATE
+    params['Momentum'] = cfg.TRAIN.MOMENTUM
+    params['StepSize'] = cfg.TRAIN.STEP_SIZE
+    params['Gamma'] = cfg.TRAIN.GAMMA
+    params['NumEpochs'] = cfg.TRAIN.NUM_EPOCHS
+    # params['RawDataPath'] = cfg.DATA.PATH_RAW
+    # params['RootPath'] = cfg.WORK.PATH
+    # params['TestImgPath'] = join(cfg.DATA.PATH_RAW, cfg.DATA.DIR_TEST)
+    # params['TrainImgPath'] = join(cfg.DATA.PATH_RAW, cfg.DATA.DIR_TRAIN)
+    # params['TrainDataFile'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.TRAIN_DATA_FILE)
+    # params['ValidDataFile'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.VALID_DATA_FILE)
     return params
 
 def getMostPopularBreeds(df, numClasses=16):
@@ -175,8 +178,8 @@ def train_model(dataloders, model, criterion, optimizer, scheduler, num_epochs=2
                 best_acc = valid_epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
 
-        print('Epoch [{}/{}] train loss: {:.4f} acc: {:.4f} ' 
-              'valid loss: {:.4f} acc: {:.4f}'.format(
+        print('Epoch [{}/{}] train loss: {:.4f}, acc: {:.4f}' 
+              ',\n            valid loss: {:.4f}, acc: {:.4f}'.format(
                   epoch, num_epochs - 1,
                   train_epoch_loss, train_epoch_acc, 
                   valid_epoch_loss, valid_epoch_acc))
@@ -211,7 +214,7 @@ def main():
     print('\nBreeds head:'); print(df_breeds.head())
 
     # Get most popular breeds
-    NumClasses = Params['NumPopularClasses']
+    NumClasses = Params['NumClasses']
     selected_breeds, selected_bids = getMostPopularBreeds(df_breeds, NumClasses)
     print('\nSelected breeds: [\n  {}\n]'.format('\n  '.join(selected_breeds)))
 
@@ -223,8 +226,8 @@ def main():
     print(json.dumps(breed_dic_fw, indent=2))
 
     breed_dic_bw = df2dict(df_selected_breeds, 'bw')
-    print('\nBreed dict (backward):')
-    print(json.dumps(breed_dic_bw, indent=2))
+    # print('\nBreed dict (backward):')
+    # print(json.dumps(breed_dic_bw, indent=2))
 
     # Read labels information from csv file
     csv_prco_labels = Params['ProcessedLabels']
@@ -274,20 +277,51 @@ def main():
     print('\nImage shape:', imgs[0].shape)
     print('Label shape:', lbls[0].shape)
 
-    data_loader = { 'train': trainLoader, 'valid': validLoader }
-
     dataset_sizes = { 'train': len(trainSet), 'valid': len(validSet) }
     print('\nDataset sizes:', dataset_sizes)
 
+    # Use GPU
+    use_gpu = torch.cuda.is_available()
+    device = torch.device("cuda:0" if use_gpu else "cpu")
+    print(); print(device)
 
-
-
-
+    # Set Models
+    resnet = models.resnet50(pretrained=True)
 
     # # Load pretrained model
-    # pre_model_path = join(ModelPath, 'resnet50-19c8e357.pth')
-    # pre_model_wts = torch.load(pre_model_path)
-    # resnet.load_state_dict(pre_model_wts)
+    pre_model_path = Params['PretrainedModel']
+    pre_model_wts = torch.load(pre_model_path)
+    resnet.load_state_dict(pre_model_wts)
+
+    # freeze all model parameters
+    for param in resnet.parameters():
+        param.requires_grad = False
+
+    # new final layer with 16 classes
+    num_ftrs = resnet.fc.in_features
+    resnet.fc = nn.Linear(num_ftrs, NumClasses)
+    if use_gpu:
+        resnet = resnet.cuda()
+    
+    criterion = nn.CrossEntropyLoss()
+
+    lr = Params['LearningRate']
+    momentum = Params['Momentum']
+    step_size = Params['StepSize']
+    gamma = Params['Gamma']
+
+    optimizer = optim.SGD(resnet.fc.parameters(), lr, momentum)
+    exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size, gamma)
+
+    dataLoaders = { 'train':trainLoader, 'valid':validLoader }
+
+    # Training and Validate 
+    num_epochs = Params['NumEpochs']
+    start_time = time.time()
+    model = train_model(
+        dataLoaders, resnet, criterion, optimizer, exp_lr_scheduler, num_epochs
+    )
+    print('Training time: {:10f} minutes'.format((time.time()-start_time)/60))    
 
 
 if __name__=='__main__':
