@@ -3,6 +3,7 @@
 
 from __future__ import print_function, division
 
+import os, sys
 import argparse
 import copy
 import json
@@ -11,7 +12,6 @@ import numpy as np
 import pandas as pd
 import time
 from mpl_toolkits.axes_grid1 import ImageGrid
-from os import listdir
 from os.path import join
 from PIL import Image
 
@@ -34,6 +34,7 @@ def parse_args():
                         help="Configuration filename.")
     return parser.parse_args()
 
+
 def getParams(cfg):
     params = {}
     params['BatchSize'] = cfg.TRAIN.BATCH_SIZE
@@ -47,18 +48,14 @@ def getParams(cfg):
     params['StepSize'] = cfg.TRAIN.STEP_SIZE
     params['Gamma'] = cfg.TRAIN.GAMMA
     params['NumEpochs'] = cfg.TRAIN.NUM_EPOCHS
-    # params['RawDataPath'] = cfg.DATA.PATH_RAW
-    # params['RootPath'] = cfg.WORK.PATH
-    # params['TestImgPath'] = join(cfg.DATA.PATH_RAW, cfg.DATA.DIR_TEST)
-    # params['TrainImgPath'] = join(cfg.DATA.PATH_RAW, cfg.DATA.DIR_TRAIN)
-    # params['TrainDataFile'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.TRAIN_DATA_FILE)
-    # params['ValidDataFile'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.VALID_DATA_FILE)
     return params
+
 
 def getMostPopularBreeds(df, numClasses=16):
     selected_breeds = list(df['breed'][:numClasses] )
     selected_breed_ids = list(df['breed_id'][:numClasses] )
     return selected_breeds, selected_breed_ids
+
 
 def df2dict(df, direc='fw'):
     dic = {}
@@ -69,6 +66,7 @@ def df2dict(df, direc='fw'):
             key = str(row['breed_id'])
             dic[key] = row['breed']
     return dic
+
 
 def getTrainAndValidData(selectedData, fracForTrain=0.8):
     img_list = list(selectedData['image'])
@@ -98,7 +96,8 @@ class myDataset(Dataset):
             self.images = data['valid'][0]
             self.labels = data['valid'][1]
         else:
-            raise "Phase must be 'train' or 'valid'"
+            print("Phase must be 'train' or 'valid'")
+            sys.exit()
 
         self.transform = transform
         self.len = len(self.images)
@@ -208,8 +207,8 @@ def main():
     print('\nParameters:'); print(json.dumps(Params, indent=2))
 
     # Read breed information from precessed breed csv file
-    csv_proc_breeds = Params['ProcessedBreeds']
-    df_breeds = pd.read_csv(csv_proc_breeds)
+    csv_breeds_proc = Params['ProcessedBreeds']
+    df_breeds = pd.read_csv(csv_breeds_proc)
     print('\nBreeds info:'); print(df_breeds.info())
     print('\nBreeds head:'); print(df_breeds.head())
 
@@ -218,20 +217,20 @@ def main():
     selected_breeds, selected_bids = getMostPopularBreeds(df_breeds, NumClasses)
     print('\nSelected breeds: [\n  {}\n]'.format('\n  '.join(selected_breeds)))
 
-    df_selected_breeds = df_breeds[df_breeds['breed'].isin(selected_breeds)]
+    df_breeds_selected = df_breeds[df_breeds['breed'].isin(selected_breeds)]
 
     # Build breed dictionary, both forward and backward
-    breed_dic_fw = df2dict(df_selected_breeds)
+    breed_dic_fw = df2dict(df_breeds_selected)
     print('\nBreed dict (forward):')
     print(json.dumps(breed_dic_fw, indent=2))
 
-    breed_dic_bw = df2dict(df_selected_breeds, 'bw')
+    breed_dic_bw = df2dict(df_breeds_selected, 'bw')
     # print('\nBreed dict (backward):')
     # print(json.dumps(breed_dic_bw, indent=2))
 
     # Read labels information from csv file
-    csv_prco_labels = Params['ProcessedLabels']
-    df_labels = pd.read_csv(csv_prco_labels)
+    csv_labels_proc = Params['ProcessedLabels']
+    df_labels = pd.read_csv(csv_labels_proc)
     print('\nLabels info:'); print(df_labels.info())
     print('\nLabels head:'); print(df_labels.head())
 
@@ -276,7 +275,7 @@ def main():
     print('Labels size: ', lbls.size())
     print('\nImage shape:', imgs[0].shape)
     print('Label shape:', lbls[0].shape)
-
+    
     dataset_sizes = { 'train': len(trainSet), 'valid': len(validSet) }
     print('\nDataset sizes:', dataset_sizes)
 
