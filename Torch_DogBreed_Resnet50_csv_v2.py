@@ -220,11 +220,11 @@ def main():
     df_breeds_selected = df_breeds[df_breeds['breed'].isin(selected_breeds)]
 
     # Build breed dictionary, both forward and backward
-    breed_dic_fw = df2dict(df_breeds_selected)
-    print('\nBreed dict (forward):')
-    print(json.dumps(breed_dic_fw, indent=2))
+    # breed_dic_fw = df2dict(df_breeds_selected)
+    # print('\nBreed dict (forward):')
+    # print(json.dumps(breed_dic_fw, indent=2))
 
-    breed_dic_bw = df2dict(df_breeds_selected, 'bw')
+    # breed_dic_bw = df2dict(df_breeds_selected, 'bw')
     # print('\nBreed dict (backward):')
     # print(json.dumps(breed_dic_bw, indent=2))
 
