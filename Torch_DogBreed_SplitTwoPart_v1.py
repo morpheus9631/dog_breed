@@ -81,6 +81,7 @@ def splitTwoParts(df, frac_for_train=0.8, disp=False):
         'valid': { 'images': valid_imgs, 'labels': valid_lbls }
     }
 
+
 # Deprecated: 2020.09.15
 def saveToNpzFile(path, train_imgs, train_lbls, valid_imgs, valid_lbls):
     phase = ['train', 'valid']
