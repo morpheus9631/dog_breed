@@ -38,16 +38,21 @@ def parse_args():
 def getParams(cfg):
     params = {}
     params['BatchSize'] = cfg.TRAIN.BATCH_SIZE
-    params['FracForTrain'] = cfg.TRAIN.FRAC_FOR_TRAIN
     params['NumClasses'] = cfg.TRAIN.NUM_CLASSES
-    params['PreTrainedModel'] = join(cfg.PRETRAINED.PATH, cfg.PRETRAINED.FNAME)
-    params['ProcessedBreeds'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.FNAME_BREEDS+'.npz')
-    params['ProcessedLabels'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.FNAME_LABELS+'.npz')
-    params['LearningRate'] = cfg.TRAIN.LEARNING_RATE
+    params['FracForTrain'] = cfg.TRAIN.FRAC_FOR_TRAIN
+
+    model = cfg.PRETRAINED.FNAME_RESNET50
+    params['PreTrainedModel'] = join(cfg.PRETRAINED.PATH, model)
+
+    proc_path = cfg.PROCESSED.PATH
+    params['ProcessedBreeds'] = join(proc_path, cfg.PROCESSED.FNAME_BREEDS+'.npz')
+    params['ProcessedLabels'] = join(proc_path, cfg.PROCESSED.FNAME_LABELS+'.npz')
+
+    params['Gamma'] = cfg.TRAIN.GAMMA
     params['Momentum'] = cfg.TRAIN.MOMENTUM
     params['StepSize'] = cfg.TRAIN.STEP_SIZE
-    params['Gamma'] = cfg.TRAIN.GAMMA
     params['NumEpochs'] = cfg.TRAIN.NUM_EPOCHS
+    params['LearningRate'] = cfg.TRAIN.LEARNING_RATE
     return params
 
 

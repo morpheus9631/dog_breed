@@ -40,9 +40,14 @@ def getParams(cfg):
     params['BatchSize'] = cfg.TRAIN.BATCH_SIZE
     params['FracForTrain'] = cfg.TRAIN.FRAC_FOR_TRAIN
     params['NumClasses'] = cfg.TRAIN.NUM_CLASSES
-    params['PreTrainedModel'] = join(cfg.PRETRAINED.PATH, cfg.PRETRAINED.FNAME)
-    params['ProcessedBreeds'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.FNAME_BREEDS+'.npz')
-    params['ProcessedLabels'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.FNAME_LABELS+'.npz')
+
+    model = cfg.PRETRAINED.FNAME_RESNET18
+    params['PreTrainedModel'] = join(cfg.PRETRAINED.PATH, model)
+
+    proc_path = cfg.PROCESSED.PATH
+    params['ProcessedBreeds'] = join(proc_path, cfg.PROCESSED.FNAME_BREEDS+'.npz')
+    params['ProcessedLabels'] = join(proc_path, cfg.PROCESSED.FNAME_LABELS+'.npz')
+    
     params['LearningRate'] = cfg.TRAIN.LEARNING_RATE
     params['Momentum'] = cfg.TRAIN.MOMENTUM
     params['StepSize'] = cfg.TRAIN.STEP_SIZE
@@ -55,7 +60,7 @@ def loadNpzFile(f_abspath):
     load_data = np.load(f_abspath, allow_pickle=True)
     col_names = load_data.files
     df = pd.DataFrame.from_dict(
-        {col: load_data[col] for col in col_names}
+        { col: load_data[col] for col in col_names }
     )
     df.columns = col_names
     return df
