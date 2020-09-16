@@ -127,8 +127,8 @@ def setModel(numClasses, preTrainedModel=None):
 
     # Load pretrained model
     if preTrainedModel is not None:
-        pre_model_wts = torch.load(preTrainedModel)
-        model.load_state_dict(pre_model_wts)
+        checkpoint = torch.load(preTrainedModel)
+        model.load_state_dict(checkpoint)
 
     # freeze all model parameters
     for param in model.parameters():
