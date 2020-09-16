@@ -59,47 +59,21 @@ def createProcessedLabels(path, df_lbls, df_bds):
     return df
 
 
-def splitTwoParts(df, frac_for_train=0.8, disp=False):
+def splitDataset(df, frac_for_train=0.8):
     total_rows = df.shape[0]
     train_len = int(float(frac_for_train) * float(total_rows))
-    # print('Train len: ', train_len)
+    valid_len = total_rows - train_len
 
-    train_imgs = df['image'][:train_len]
-    train_lbls = df['breed_id'][:train_len]
-
-    valid_imgs = df['image'][train_len:]
-    valid_lbls = df['breed_id'][train_len:]
-
-    if disp:
-        print('\nTotal rows:', total_rows)
-        formatter = '{} size: images ({}), lables ({})'
-        print(formatter.format('train', len(train_imgs), len(train_lbls)))
-        print(formatter.format('valid', len(valid_imgs), len(valid_imgs)))
-
-    return {
-        'train': { 'images': train_imgs, 'labels': train_lbls },
-        'valid': { 'images': valid_imgs, 'labels': valid_lbls }
-    }
+    df_train = df.head(train_len).copy()
+    df_valid = df.tail(valid_len).copy()
+    return { 'train': df_train, 'valid': df_valid }
 
 
-# Deprecated: 2020.09.15
-def saveToNpzFile(path, train_imgs, train_lbls, valid_imgs, valid_lbls):
-    phase = ['train', 'valid']
-    types = ['images', 'labels']
-
-    fnames = ['{}_data.npz'.format(x) for x in phase]
-    data = [[train_imgs, train_lbls], [valid_imgs, valid_lbls]]
-
-    print('Process start...')
-    result = {}
-    for i in range(len(fnames)):
-        f_abspath = join(path, fnames[i])
-        print("'{}' processing...".format(f_abspath))
-        args = { types[0]: data[i][0], types[1]: data[i][1] }
-        np.savez(f_abspath, **args)
-        result[f_abspath] = exists(f_abspath)
-    print('Process end.')
-    return result
+def saveToNpzFile(f_abspath, df):
+    col_names = df.columns.tolist()
+    args = { x: df[x] for x in col_names }
+    np.savez(f_abspath, **args)
+    return exists(f_abspath)
 
 
 def main():
@@ -133,21 +107,17 @@ def main():
 
     # Build data lists
     FRAC_FOR_TRAIN = 0.8
-    data = splitTwoParts(df_labels_proc, FRAC_FOR_TRAIN, True)
+    df_data = splitDataset(df_labels_proc, FRAC_FOR_TRAIN)
 
-    # # Verify npz file
-    # print('\nWrite to npz files:')
-    # train_imgs = data['train']['images']
-    # train_lbls = data['train']['labels']
-    # valid_imgs = data['valid']['images'] 
-    # valid_lbls = data['valid']['labels']
-    # results = saveToNpzFile(ProcPath, train_imgs, train_lbls, valid_imgs, valid_lbls)
-
-    # print('\nNPZ files:')
-    # for f_abspath in results:
-    #     outstr = 'exist.' if exists(f_abspath) else 'not exist...'
-    #     print("\n'{}' {}".format(f_abspath, outstr))
-    #     showNpzFile(f_abspath)
+    # Save data to .npz file
+    print()
+    phase = ['train', 'valid']
+    for x in phase:
+        df_data_save = df_data[x]
+        fname = '{}_data.npz'.format(x)
+        f_abspath = join(ProcPath, fname)
+        saveToNpzFile(f_abspath, df_data_save)
+        print("'{}' exist ? {}".format(f_abspath, exists(f_abspath)))
 
 
 if __name__=='__main__':

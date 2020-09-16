@@ -118,7 +118,7 @@ class myDataset(Dataset):
 
 def setModel(numClasses, preTrainedModel=None):
 
-    model = models.resnet50(pretrained=True)
+    model = models.resnet18(pretrained=True)
 
     # # Load pretrained model
     if preTrainedModel is not None:
