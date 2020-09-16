@@ -24,7 +24,7 @@ _C.PRETRAINED = CN()
 _C.PRETRAINED.PATH  = "D:\\GitWork\\dog_breed\\models\\"
 _C.PRETRAINED.FNAME_RESNET18 = 'resnet18-5c106cde.pth'
 _C.PRETRAINED.FNAME_RESNET50 = 'resnet50-19c8e357.pth'
-_C.PRETRAINED.FNAME_INCEPTIONV3 = 'inception_v3-1a9a5a14.pth'
+_C.PRETRAINED.FNAME_INCEPTION_V3 = 'inception_v3-1a9a5a14.pth'
 
 _C.TRAIN = CN()
 _C.TRAIN.FRAC_FOR_TRAIN = 0.8
