@@ -85,27 +85,27 @@ def df2dict(df, dir='fw'):
 
 class myDataset(Dataset):
 
-    def __init__(self, df_selected, fracForTrain=0.8, train=True, transform=None):
+    def __init__(self, df, fracForTrain=0.8, train=True, transform=None):
 
-        df = self.getTargetData(df_selected, fracForTrain, train)
+        df_target = self.getTargetDataset(df, fracForTrain, train)
         # outstr = '\nTrain' if train else 'Valid'
         # print('{} len: {}'.format(outstr, df.shape))
         
-        self.images = list(df['image'])
-        self.labels = list(df['breed_id'])
+        self.images = list(df_target['image'])
+        self.labels = list(df_target['breed_id'])
         self.len = len(self.images)
         self.transform = transform
 
-    def getTargetData(self, df, fracForTrain, train):
-        total_rows = df.shape[0]
+    def getTargetDataset(self, df_in, fracForTrain, train):
+        total_rows = df_in.shape[0]
         train_len = int(float(fracForTrain) * float(total_rows))
         valid_len = total_rows - train_len
         # print('Train len: ', train_len)
         if train:
-            df = df.head(train_len)
+            df_out = df_in.head(train_len)
         else:
-            df = df.tail(valid_len)
-        return df
+            df_out = df_in.tail(valid_len)
+        return df_out
 
     def __getitem__(self, index):
         img_abspath = self.images[index]
@@ -125,7 +125,7 @@ def setModel(numClasses, preTrainedModel=None):
 
     model = models.resnet50(pretrained=True)
 
-    # # Load pretrained model
+    # Load pretrained model
     if preTrainedModel is not None:
         pre_model_wts = torch.load(preTrainedModel)
         model.load_state_dict(pre_model_wts)
@@ -330,10 +330,11 @@ def main():
     step_size = Params['StepSize']
     exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size, gamma)
 
-    dataLoaders = { 'train':trainLoader, 'valid':validLoader }
-
     # Training and Validate 
     num_epochs = Params['NumEpochs']
+    
+    dataLoaders = { 'train': trainLoader, 'valid': validLoader }
+    
     start_time = time.time()
     model = train_model(
         dataLoaders, model, criterion, optimizer, exp_lr_scheduler, num_epochs
