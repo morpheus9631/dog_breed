@@ -22,9 +22,15 @@ _C.PROCESSED.FNAME_LABELS = "labels_processed"
 
 _C.PRETRAINED = CN()
 _C.PRETRAINED.PATH  = "D:\\GitWork\\dog_breed\\models\\"
+_C.PRETRAINED.FNAME_INCEPTION_V3 = 'inception_v3-1a9a5a14.pth'
 _C.PRETRAINED.FNAME_RESNET18 = 'resnet18-5c106cde.pth'
 _C.PRETRAINED.FNAME_RESNET50 = 'resnet50-19c8e357.pth'
-_C.PRETRAINED.FNAME_INCEPTION_V3 = 'inception_v3-1a9a5a14.pth'
+_C.PRETRAINED.FNAME_BEST_MODEL = 'resnet50_20200918-2043_acc95.pth'
+
+_C.OUTPUT = CN()
+_C.OUTPUT.PATH = "D:\\GitWork\\dog_breed\\output\\"
+_C.OUTPUT.CSV_SUMBMISSION = 'Submission.csv'
+_C.OUTPUT.CSV_PREDICTION = 'Prediction.csv'
 
 _C.TRAIN = CN()
 _C.TRAIN.FRAC_FOR_TRAIN = 0.8
