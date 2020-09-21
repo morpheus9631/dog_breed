@@ -7,13 +7,10 @@ DATA:
   PATH: "D:\\GitWork\\dog_breed\\data\\"
   DIR_TEST: "test"
   DIR_TRAIN: "train"
-
-  PATH_RAW:  "D:\\GitWork\\dog_breed\\data\\raw\\"
   CSV_LABELS: "labels.csv"
-  CSV_SAMPLE_SUBMISSION: "sample_submission.csv"
 
 PROCESSED:
-  PATH: "D:\\GitWork\\dog_breed\\data\\processed\\"
+  PATH: "D:\\GitWork\\dog_breed\\processed\\"
   FNAME_BREEDS: "breeds_processed"
   FNAME_LABELS: "labels_processed"
   
@@ -22,6 +19,12 @@ PRETRAINED:
   FNAME_RESNET18: 'resnet18-5c106cde.pth'
   FNAME_RESNET50: 'resnet50-19c8e357.pth'
   FNAME_INCEPTION_V3: 'inception_v3-1a9a5a14.pth'
+
+OUTPUT:
+  PATH: "D:\\GitWork\\dog_breed\\output\\"
+  CSV_SUMBMISSION: 'Submission.csv'
+  CSV_PREDICTION : 'Prediction.csv'
+
 
 TRAIN:
   FRAC_FOR_TRAIN: 0.8

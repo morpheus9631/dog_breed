@@ -4,26 +4,32 @@ __pycache__/
 *$py.class
 configs/__pycache__/
 
+# Backup
+backup/
+
 # Jupyter Notebook
 .ipynb_checkpoints
 Untitled.ipynb
 
 # Data:
 data/*
-!data/*/
 !data/download.txt
 
-data/processed/*
-!data/processed/*.csv
-!data/processed/*.npy
+# Processed
+processed/*
+!processed/*.csv
+!processed/*.npy
 
-data/raw/*
-!data/raw/*.csv
-
-data/*.zip
-
-# Models
-models/*.pth
+# Pretrained Models
+pretrained/*
+pretrained/inception_v3-1a9a5a14.pth
+pretrained/resnet18-5c106cde.pth
+pretrained/resnet50-19c8e357.pth
+!pretrained/readme.md
+!pretrained/resnet50_20200918-2043_acc95.pth
 
 # vsccode
 .vscode/
+
+# Olds
+olds/
