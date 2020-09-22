@@ -86,15 +86,15 @@ def showNpzFile(f_abspath, num=10):
 
 
 def main():
-    RawPath = r'D:\GitWork\dog_breed\data\raw'
-    print('\nRaw path:', RawPath)
+    DataPath = r'D:\GitWork\dog_breed\data'
+    print('\nRaw path:', DataPath)
  
-    ProcPath = r'D:\GitWork\dog_breed\data\processed'
+    ProcPath = r'D:\GitWork\dog_breed\processed'
     print('Proc path:', ProcPath)
 
     # Load labels.csv
     fname = 'labels.csv'
-    df_labels = getCsvLabels(RawPath, fname)
+    df_labels = getCsvLabels(DataPath, fname)
     print("\n'{}':".format(fname))
     print('Info:'); print(df_labels.head()) 
     print('\nHead:'); print(df_labels.info())
@@ -118,7 +118,7 @@ def main():
 
     #
     # Create processed labels file
-    img_path = join(RawPath, 'train')
+    img_path = join(DataPath, 'train')
     df_labels_proc = createProcessedLabels(img_path, df_labels, df_breeds_proc)
     print('\nProcessed labels:'); 
     print(df_labels_proc.info())

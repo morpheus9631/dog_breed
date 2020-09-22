@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import time
+from datetime import datetime
 from mpl_toolkits.axes_grid1 import ImageGrid
 from os import listdir
 from os.path import join
@@ -45,9 +46,10 @@ def getParams(cfg):
     params['PreTrainedModel'] = join(cfg.PRETRAINED.PATH, model)
 
     proc_path = cfg.PROCESSED.PATH
-    params['ProcessedBreeds'] = join(proc_path, cfg.PROCESSED.FNAME_BREEDS+'.npz')
-    params['ProcessedLabels'] = join(proc_path, cfg.PROCESSED.FNAME_LABELS+'.npz')
+    params['ProcessedBreeds'] = join(proc_path, cfg.PROCESSED.FNAME_BREEDS)+'.npz'
+    params['ProcessedLabels'] = join(proc_path, cfg.PROCESSED.FNAME_LABELS)+'.npz'
 
+    params['OutPath'] = cfg.OUTPUT.PATH
     params['Gamma'] = cfg.TRAIN.GAMMA
     params['Momentum'] = cfg.TRAIN.MOMENTUM
     params['StepSize'] = cfg.TRAIN.STEP_SIZE
@@ -210,8 +212,16 @@ def train_model(dataloders, model, criterion, optimizer, scheduler, num_epochs=2
     print('\nBest val Acc: {:4f}'.format(best_acc))
 
     model.load_state_dict(best_model_wts)
-    return model
+    return model, best_acc
 
+
+def saveBestModel(outPath, model, acc):
+    currDT = datetime.now()
+    currStr = currDT.strftime("%Y%m%d-%H%M")
+    acc_str = int(acc * 100)
+    fname = 'resnet50_{}_acc{}.pth'.format(currStr, acc_str)
+    torch.save(model.state_dict(), join(outPath, fname))
+    return
 
 
 def main():
@@ -336,10 +346,14 @@ def main():
     dataLoaders = { 'train': trainLoader, 'valid': validLoader }
     
     start_time = time.time()
-    model = train_model(
+    model, best_acc = train_model(
         dataLoaders, model, criterion, optimizer, exp_lr_scheduler, num_epochs
     )
     print('Training time: {:10f} minutes'.format((time.time()-start_time)/60)) 
+
+    # Save BestModel
+    OutPath = Params['OutPath']
+    saveBestModel(OutPath, model, best_acc)
     return  
 
 
