@@ -269,7 +269,7 @@ def main():
 
     img = imgs[0]
     print('\nImage shape:', img.shape)
-    print(); print(img)
+    # print(); print(img)
     print('\nLabels:', lbls)
 
     # Use GPU for train
