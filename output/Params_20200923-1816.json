@@ -1,0 +1,13 @@
+{
+    "DataPath": "D:\\GitWork\\dog_breed\\data",
+    "OutPath": "D:\\GitWork\\dog_breed\\output",
+    "ProcPath": "D:\\GitWork\\dog_breed\\processed",
+    "PreTrainPath": "D:\\GitWork\\dog_breed\\pretrained",
+    "PreTrainFile": "resnet50_20200923-1604_acc79.pth",
+    "LoadPreModel": true,
+    "TestPath": "D:\\GitWork\\dog_breed\\data\\test",
+    "TrainPath": "D:\\GitWork\\dog_breed\\data\\train",
+    "CsvLabel": "labels.csv",
+    "BatchSize": 16,
+    "FracForTrain": 0.8
+}
