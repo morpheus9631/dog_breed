@@ -1,3 +1,3 @@
 # Pretrained PyTorch Models
 
-Unzip pretrained pytorch models here.  
+Put pretrained pytorch models here.
