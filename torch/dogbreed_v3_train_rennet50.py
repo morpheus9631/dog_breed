@@ -7,6 +7,7 @@ if parent_path not in sys.path: sys.path.insert(0, parent_path)
 
 import argparse
 import copy
+import csv
 import json
 import numpy as np
 import pandas as pd
@@ -264,14 +265,15 @@ def buildModel(cfg, numClasses, use_gpu):
 
 
 # Current datetime to string
-def currDTstr():
+def currDatetimeStr():
     currDT = datetime.now()
-    currStr = currDT.strftime("%Y%m%d-%H%M%S")
+    currStr = currDT.strftime("%Y%m%d-%H%M")
     return currStr
 
 
 # Train and validate Model
-def train_model(loader, model, criterion, optimizer, scheduler, num_epochs=25):
+def train_model(cfg, loader, model, criterion, optimizer, scheduler, num_epochs=3):
+    print('\nStart training...')
     since = time.time()
     
     use_gpu = torch.cuda.is_available()
@@ -279,13 +281,21 @@ def train_model(loader, model, criterion, optimizer, scheduler, num_epochs=25):
     best_model_wts = copy.deepcopy(model.state_dict())
     best_acc = 0.0
     
-    history  = {
-        'train_acc': [],
-        'train_los': [],
-        'valid_acc': [],
-        'valid_los': []
-    }
+    # Write accurancy and loss to csv fiel
+    outPath = cfg.OUTPUT.PATH
+    currStr = currDatetimeStr()
+    fname_out = 'output_{}.csv'.format(currStr)
+    abspath_out = join(outPath, fname_out)
+    columns = [
+        'epoch', 'train_acc', 'train_loss', 'valid_acc', 'valid_loss'
+    ]
+
+    csvFile = open(abspath_out, 'w', newline='')
+    csvWrite = csv.writer(csvFile)
+    csvWrite.writerow(columns)
+    csvFile.flush()
     
+    # Dataset sizes
     dataset_sizes = {
         'train': len(loader['train'].dataset),
         'valid': len(loader['valid'].dataset)
@@ -333,31 +343,39 @@ def train_model(loader, model, criterion, optimizer, scheduler, num_epochs=25):
             data_size = dataset_sizes[phase]
             
             if phase == 'train':
-                train_epoch_loss = running_loss / data_size
-                train_epoch_acc  = running_corrects / data_size
+                train_loss = running_loss / data_size
+                train_acc  = running_corrects / data_size
             else:
-                valid_epoch_loss = running_loss / data_size
-                valid_epoch_acc  = running_corrects / data_size
+                valid_loss = running_loss / data_size
+                valid_acc  = running_corrects / data_size
 
-            if phase == 'valid' and valid_epoch_acc > best_acc:
-                best_acc = valid_epoch_acc
+            if phase == 'valid' and valid_acc > best_acc:
+                best_acc = valid_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
 
-        history['train_acc'].append(train_epoch_acc.item())
-        history['train_los'].append(train_epoch_loss)
-        history['valid_acc'].append(valid_epoch_acc.item())
-        history['valid_los'].append(valid_epoch_loss)
-        
+                # save best model
+                accStr = int(best_acc * 100)
+                fname_best_model = 'resnet50_{}_acc{}.pth'.format(currStr, accStr)
+                abspath_best_model = join(outPath, fname_best_model)
+                torch.save(best_model_wts, abspath_best_model)
+                currStr = currDatetimeStr()
+
         print('Epoch [{:3d}/{:3d}] train loss: {:.4f} acc: {:.4f}' 
               '\n                valid loss: {:.4f} acc: {:.4f}'.format(
                   epoch, num_epochs - 1,
-                  train_epoch_loss, train_epoch_acc, 
-                  valid_epoch_loss, valid_epoch_acc))
+                  train_loss, train_acc, valid_loss, valid_acc))
 
+        out_vals = [ 
+            epoch, train_acc.item(), train_loss, valid_acc.item(), valid_loss
+        ]
+        csvWrite.writerow(out_vals)
+        csvFile.flush()
+
+    csvFile.close()
     print('\nBest val Acc: {:4f}'.format(best_acc))
 
     model.load_state_dict(best_model_wts)
-    return model, best_acc, history
+    return model, best_acc
 
 
 def main():
@@ -416,14 +434,12 @@ def main():
     # Training and validate
     NumEpochs = CFG.TRAIN.NUM_EPOCHS
     start_time = time.time()
-    best_model, best_acc, history = train_model(
-        dataloader, model, criterion, optimizer, exp_lr_scheduler, NumEpochs
+    best_model, best_acc = train_model(
+        CFG, dataloader, model, criterion, optimizer, exp_lr_scheduler, NumEpochs
     )
     print('Training time: {:10f} minutes'.format((time.time()-start_time)/60))
 
-
-    return
-
+    return (0)
 
 
 if __name__=='__main__':

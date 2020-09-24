@@ -23,8 +23,6 @@ PRETRAINED:
 
 OUTPUT:
   PATH: "D:\\GitWork\\dog_breed\\output\\"
-  FNAME_PREDICTION : 'Preds_{}.csv'
-  FNAME_PROBABILITY: 'Probs_{}.csv'
 
 TRAIN:
   BATCH_SIZE: 16
