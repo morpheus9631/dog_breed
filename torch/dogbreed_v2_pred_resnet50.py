@@ -33,7 +33,7 @@ from configs.config_train import get_cfg_defaults
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Dog Breed Indentification')
+    parser = argparse.ArgumentParser(description='Dog Breed identification by PyTorch')
     parser.add_argument("--cfg", type=str, default="configs/config_train.yaml",
                         help="Configuration filename.")
     return parser.parse_args()
