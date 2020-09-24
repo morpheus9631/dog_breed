@@ -4,6 +4,11 @@
 from __future__ import print_function, division
 
 import os, sys
+from os.path import abspath, dirname, isfile, join
+
+parent_path = abspath(dirname(dirname(__file__)))
+if parent_path not in sys.path: sys.path.insert(0, parent_path)
+
 import argparse
 import copy
 import io
@@ -13,7 +18,6 @@ import pandas as pd
 import time
 from datetime import datetime
 from os import listdir
-from os.path import join, isfile
 from PIL import Image
 
 import torch
@@ -29,7 +33,7 @@ from configs.config_train import get_cfg_defaults
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Ants and Bees by PyTorch')
+    parser = argparse.ArgumentParser(description='Dog Breed Indentification')
     parser.add_argument("--cfg", type=str, default="configs/config_train.yaml",
                         help="Configuration filename.")
     return parser.parse_args()
@@ -278,9 +282,9 @@ def main():
     print(); print(device)
 
     # Build Model
-    PreTranPath = CFG.PRETRAINED.PATH
-    PreTranModel = CFG.PRETRAINED.FNAME_BEST_MODEL
-    model = getModel(NumClasses, PreTranPath, PreTranModel)
+    PretranPath = CFG.PRETRAINED.PATH
+    PretranFile = CFG.PRETRAINED.FNAME_PREMODEL
+    model = getModel(NumClasses, PretranPath, PretranFile)
     # print(); print(model)
 
     if use_gpu: model = model.cuda()

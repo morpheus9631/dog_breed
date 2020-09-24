@@ -3,6 +3,11 @@
 
 from __future__ import print_function, division
 
+import os, sys
+from os.path import abspath, dirname, isfile, join
+parent_path = abspath(dirname(dirname(__file__)))
+if parent_path not in sys.path: sys.path.insert(0, parent_path)
+
 import argparse
 import copy
 import json

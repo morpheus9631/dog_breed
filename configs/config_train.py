@@ -8,34 +8,30 @@ _C.WORK.PATH = "D:\\GitWork\\dog_breed\\"
 
 _C.DATA = CN()
 _C.DATA.PATH = "D:\\GitWork\\dog_breed\\data\\"
-_C.DATA.CSV_LABELS = "labels.csv"
-_C.DATA.CSV_SAMPLE_SUBMISSION = "sample_submission.csv"
-
-_C.DATA.PATH_RAW  = "D:\\GitWork\\dog_breed\\data\\raw\\"
 _C.DATA.DIR_TEST = "test"
 _C.DATA.DIR_TRAIN = "train"
+_C.DATA.FNAME_LABELS = "labels.csv"
 
 _C.PROCESSED = CN()
 _C.PROCESSED.PATH  = "D:\\GitWork\\dog_breed\\data\\processed\\"
-_C.PROCESSED.FNAME_BREEDS = "breeds_processed"
-_C.PROCESSED.FNAME_LABELS = "labels_processed"
+_C.PROCESSED.FNAME_BREEDS = ""
+_C.PROCESSED.FNAME_LABELS = ""
 
 _C.PRETRAINED = CN()
 _C.PRETRAINED.PATH  = "D:\\GitWork\\dog_breed\\models\\"
-_C.PRETRAINED.FNAME_INCEPTION_V3 = 'inception_v3-1a9a5a14.pth'
-_C.PRETRAINED.FNAME_RESNET18 = 'resnet18-5c106cde.pth'
-_C.PRETRAINED.FNAME_RESNET50 = 'resnet50-19c8e357.pth'
-_C.PRETRAINED.FNAME_BEST_MODEL = 'resnet50_20200918-2043_acc95.pth'
+_C.PRETRAINED.FNAME_RESNET18 = ""
+_C.PRETRAINED.FNAME_RESNET50 = ""
+_C.PRETRAINED.FNAME_PREMODEL = ""
 
 _C.OUTPUT = CN()
 _C.OUTPUT.PATH = "D:\\GitWork\\dog_breed\\output\\"
-_C.OUTPUT.CSV_SUMBMISSION = 'Submission.csv'
-_C.OUTPUT.CSV_PREDICTION = 'Prediction.csv'
+_C.OUTPUT.FNAME_PREDICTION  = ""
+_C.OUTPUT.FNAME_PROBABILITY = ""
 
 _C.TRAIN = CN()
 _C.TRAIN.FRAC_FOR_TRAIN = 0.8
 _C.TRAIN.NUM_CLASSES = 16
-_C.TRAIN.BATCH_SIZE = 6
+_C.TRAIN.BATCH_SIZE = 16
 _C.TRAIN.LEARNING_RATE = 0.001
 _C.TRAIN.MOMENTUM = 0.9
 _C.TRAIN.STEP_SIZE = 7
