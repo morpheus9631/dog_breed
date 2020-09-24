@@ -5,8 +5,8 @@ WORK:
               
 DATA:
   PATH: "D:\\GitWork\\dog_breed\\data\\"
-  DIR_TEST: "test"
-  DIR_TRAIN: "train"
+  PATH_TEST: "D:\\GitWork\\dog_breed\\data\\test\\"
+  PATH_TRAIN: "D:\\GitWork\\dog_breed\\data\\train\\"
   FNAME_LABELS: "labels.csv"
 
 PROCESSED:

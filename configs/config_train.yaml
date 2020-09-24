@@ -5,8 +5,8 @@ WORK:
               
 DATA:
   PATH: "D:\\GitWork\\dog_breed\\data\\"
-  DIR_TEST: "test"
-  DIR_TRAIN: "train"
+  PATH_TEST: "D:\\GitWork\\dog_breed\\data\\test\\"
+  PATH_TRAIN: "D:\\GitWork\\dog_breed\\data\\train\\"
   FNAME_LABELS: "labels.csv"
 
 PROCESSED:
@@ -18,7 +18,8 @@ PRETRAINED:
   PATH: "D:\\GitWork\\dog_breed\\pretrained\\"
   FNAME_RESNET18: 'resnet18-5c106cde.pth'
   FNAME_RESNET50: 'resnet50-19c8e357.pth'
-  FNAME_PREMODEL: 'resnet50_20200918-1645_acc93_16.pth'
+  # FNAME_PREMODEL: 'resnet50_20200918-1645_acc93_16.pth'
+  FNAME_PREMODEL: ''
 
 OUTPUT:
   PATH: "D:\\GitWork\\dog_breed\\output\\"
@@ -33,5 +34,5 @@ TRAIN:
   MOMENTUM: 0.9
   STEP_SIZE: 7
   GAMMA: 0.1
-  NUM_EPOCHS: 2
+  NUM_EPOCHS: 3
   

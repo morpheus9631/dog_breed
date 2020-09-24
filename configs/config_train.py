@@ -8,8 +8,8 @@ _C.WORK.PATH = "D:\\GitWork\\dog_breed\\"
 
 _C.DATA = CN()
 _C.DATA.PATH = "D:\\GitWork\\dog_breed\\data\\"
-_C.DATA.DIR_TEST = "test"
-_C.DATA.DIR_TRAIN = "train"
+_C.DATA.PATH_TEST = "D:\\GitWork\\dog_breed\\data\\test\\"
+_C.DATA.PATH_TRAIN = "D:\\GitWork\\dog_breed\\data\\train\\"
 _C.DATA.FNAME_LABELS = "labels.csv"
 
 _C.PROCESSED = CN()
