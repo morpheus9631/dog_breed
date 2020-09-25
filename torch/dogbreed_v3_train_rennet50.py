@@ -1,9 +1,12 @@
 from __future__ import print_function, division
 
 import os, sys
-from os.path import abspath, dirname, isfile, join
-parent_path = abspath(dirname(dirname(__file__)))
+from os.path import dirname
+
+curr_path = os.path.abspath(dirname(__file__))
+parent_path = os.path.abspath(dirname(curr_path))
 if parent_path not in sys.path: sys.path.insert(0, parent_path)
+print(parent_path)
 
 import argparse
 import copy
@@ -15,7 +18,7 @@ import time
 from datetime import datetime
 from io import StringIO
 from os import listdir
-from os.path import join, exists
+from os.path import join, exists, isfile
 from PIL import Image
 
 import torch
@@ -33,7 +36,7 @@ from configs.config_train_v3 import get_cfg_defaults
 # Read parameters from yaml file
 def parse_args():
     parser = argparse.ArgumentParser(description='Dog Breed identification')
-    parser.add_argument("--cfg", type=str, default="configs/config_train_v3.yaml",
+    parser.add_argument("--cfg", type=str, default="../configs/config_train_v3.yaml",
                         help="Configuration filename.")
     return parser.parse_args()
 
