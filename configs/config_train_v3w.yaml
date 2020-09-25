@@ -13,6 +13,9 @@ PRETRAINED:
   PATH: "D:\\GitWork\\dog_breed\\pretrained\\"
   FNAME_PREMODEL: ''
 
+PROCESSED:
+  PATH: "D:\\GitWork\\dog_breed\\processed\\"  
+
 OUTPUT:
   PATH: "D:\\GitWork\\dog_breed\\output\\"
 

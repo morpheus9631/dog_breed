@@ -4,20 +4,23 @@ from yacs.config import CfgNode as CN
 _C = CN()
 
 _C.WORK = CN()
-_C.WORK.PATH = "D:\\GitWork\\dog_breed\\"
+_C.WORK.PATH = ""
 
 _C.DATA = CN()
-_C.DATA.PATH = "D:\\GitWork\\dog_breed\\data\\"
-_C.DATA.PATH_TEST = "D:\\GitWork\\dog_breed\\data\\test\\"
-_C.DATA.PATH_TRAIN = "D:\\GitWork\\dog_breed\\data\\train\\"
-_C.DATA.FNAME_LABELS = "labels.csv"
+_C.DATA.PATH = ""
+_C.DATA.PATH_TEST = ""
+_C.DATA.PATH_TRAIN = ""
+_C.DATA.FNAME_LABELS = ""
 
 _C.PRETRAINED = CN()
-_C.PRETRAINED.PATH  = "D:\\GitWork\\dog_breed\\models\\"
+_C.PRETRAINED.PATH  = ""
 _C.PRETRAINED.FNAME_PREMODEL = ""
 
+_C.PROCESSED = CN()
+_C.PROCESSED.PATH  = ""
+
 _C.OUTPUT = CN()
-_C.OUTPUT.PATH = "D:\\GitWork\\dog_breed\\output\\"
+_C.OUTPUT.PATH = ""
 
 _C.TRAIN = CN()
 _C.TRAIN.FRAC_FOR_TRAIN = 0.8

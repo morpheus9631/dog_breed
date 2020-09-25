@@ -13,6 +13,9 @@ PRETRAINED:
   PATH: "/home/user/work/dog_breed/pretrained/"
   FNAME_PREMODEL: ''
 
+PROCESSED:
+  PATH: "/home/user/work/dog_breed/processed/"  
+
 OUTPUT:
   PATH: "/home/user/work/dog_breed/output/"
 
