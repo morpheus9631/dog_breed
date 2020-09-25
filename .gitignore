@@ -33,3 +33,6 @@ processed/*
 
 # old codes
 olds/
+
+# output
+output/

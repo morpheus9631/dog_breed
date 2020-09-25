@@ -4,9 +4,9 @@ WORK:
   PATH: &work_path "D:\\GitWork\\dog_breed\\"
               
 DATA:
-  PATH: "D:\\GitWork\\dog_breed\\data\\"
-  PATH_TEST: "D:\\GitWork\\dog_breed\\data\\test\\"
-  PATH_TRAIN: "D:\\GitWork\\dog_breed\\data\\train\\"
+  PATH: "D:\\Dataset\\dog-breed-identification\\"
+  PATH_TEST: "D:\\Dataset\\dog-breed-identification\\test\\"
+  PATH_TRAIN: "D:\\Dataset\\dog-breed-identification\\train\\"
   FNAME_LABELS: "labels.csv"
 
 PROCESSED:

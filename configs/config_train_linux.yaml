@@ -4,23 +4,25 @@ WORK:
   PATH: &work_path "/home/user/work/dog_breed/"
               
 DATA:
-  PATH: "/home/user/work/dog_breed/data/"
-  PATH_RAW:  "/home/user/work/dog_breed/data/raw/"
-  DIR_TEST:  "test"
-  DIR_TRAIN: "train"
-  CSV_LABELS: "labels.csv"
-  CSV_SAMPLE_SUBMISSION: "sample_submission.csv"
+  PATH: "/hd_data/dog-breed-identification/"
+  PATH_TEST: "/hd_data/dog-breed-identification/test/"
+  PATH_TRAIN: "/hd_data/dog-breed-identification/train/"
+  FNAME_LABELS: "labels.csv"
 
 PROCESSED:
-  PATH: "/home/user/work/dog_breed/data/processed/"
-  FNAME_BREEDS: "processed_breeds"
-  FNAME_LABELS: "processed_labels"
+  PATH: "/home/user/work/dog_breed/processed/"
+  FNAME_BREEDS: "breeds_processed"
+  FNAME_LABELS: "labels_processed"
   
 PRETRAINED:
-  PATH: "/home/user/work/dog_breed/models/"
+  PATH: "/home/user/work/dog_breed/pretrained/"
   FNAME_RESNET18: 'resnet18-5c106cde.pth'
   FNAME_RESNET50: 'resnet50-19c8e357.pth'
-  FNAME_INCEPTION_V3: 'inception_v3-1a9a5a14.pth'
+  # FNAME_PREMODEL: 'resnet50_20200918-1645_acc93_16.pth'
+  FNAME_PREMODEL: ''
+
+OUTPUT:
+  PATH: "/home/user/work/dog_breed/"
 
 TRAIN:
   FRAC_FOR_TRAIN: 0.8

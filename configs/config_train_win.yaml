@@ -18,12 +18,11 @@ PRETRAINED:
   PATH: "D:\\GitWork\\dog_breed\\pretrained\\"
   FNAME_RESNET18: 'resnet18-5c106cde.pth'
   FNAME_RESNET50: 'resnet50-19c8e357.pth'
-  FNAME_PREMODEL: 'resnet50_20200918-1645_acc93_16.pth'
+  # FNAME_PREMODEL: 'resnet50_20200918-1645_acc93_16.pth'
+  FNAME_PREMODEL: ''
 
 OUTPUT:
   PATH: "D:\\GitWork\\dog_breed\\output\\"
-  FNAME_PREDICTION : 'Preds_{}.csv'
-  FNAME_PROBABILITY: 'Probs_{}.csv'
 
 TRAIN:
   BATCH_SIZE: 16
@@ -33,5 +32,5 @@ TRAIN:
   MOMENTUM: 0.9
   STEP_SIZE: 7
   GAMMA: 0.1
-  NUM_EPOCHS: 2
+  NUM_EPOCHS: 3
   
