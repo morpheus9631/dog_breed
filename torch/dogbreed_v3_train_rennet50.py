@@ -170,7 +170,13 @@ class myDataset(Dataset):
         train_len = int(float(frac) * float(num_rows))
         valid_len = num_rows - train_len
         
-        data = df.head(train_len) if phase=='train' else df.tail(valid_len)
+        # get random image id without duplicates
+        idx_ary = np.arange(len(df))
+        idx_ary_rand = np.random.permutation(idx_ary) # random shuffle
+        
+        data_len = train_len if phase=='train' else valid_len
+        data = df.loc[idx_ary_rand[:data_len]]
+
         self.images = data['image'].tolist()
         self.labels = data['breed_id'].tolist()
 
