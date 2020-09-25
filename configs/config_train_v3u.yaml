@@ -8,11 +8,6 @@ DATA:
   PATH_TEST: "/hd_data/dog-breed-identification/test/"
   PATH_TRAIN: "/hd_data/dog-breed-identification/train/"
   FNAME_LABELS: "labels.csv"
-
-PROCESSED:
-  PATH: "/home/user/work/dog_breed/processed/"
-  FNAME_BREEDS: "breeds_processed"
-  FNAME_LABELS: "labels_processed"
   
 PRETRAINED:
   PATH: "/home/user/work/dog_breed/pretrained/"
@@ -26,10 +21,11 @@ OUTPUT:
 
 TRAIN:
   FRAC_FOR_TRAIN: 0.8
-  NUM_CLASSES: 16
-  BATCH_SIZE: 6
+  NUM_CLASSES: 0
+  NUM_EPOCHS : 3
+  BATCH_SIZE : 100
   LEARNING_RATE: 0.001
   MOMENTUM: 0.9
   STEP_SIZE: 7
   GAMMA: 0.1
-  NUM_EPOCHS: 2
+

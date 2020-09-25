@@ -27,13 +27,13 @@ from torch.optim import lr_scheduler
 from torch.utils.data import Dataset, DataLoader
 from torchvision import datasets, models, transforms, utils
 
-from configs.config_train import get_cfg_defaults
+from configs.config_train_v3 import get_cfg_defaults
 
 
 # Read parameters from yaml file
 def parse_args():
     parser = argparse.ArgumentParser(description='Dog Breed identification')
-    parser.add_argument("--cfg", type=str, default="configs/config_train.yaml",
+    parser.add_argument("--cfg", type=str, default="configs/config_train_v3.yaml",
                         help="Configuration filename.")
     return parser.parse_args()
 
@@ -272,7 +272,9 @@ def currDatetimeStr():
 
 
 # Train and validate Model
-def train_model(cfg, loader, model, criterion, optimizer, scheduler, num_epochs=3):
+def train_model(
+        cfg, loader, model, criterion, optimizer, scheduler, num_epochs=3
+    ):
     print('\nStart training...')
     since = time.time()
     
@@ -398,8 +400,10 @@ def main():
     printHead(df_labels, title='Labels')
 
     # Get selected breeds, 0 is all breeds
+    NumClasses = CFG.TRAIN.NUM_CLASSES
     df_breeds, selected_breeds = getSelectedBreeds(df_labels)
-    print('\nSelected breeds:')
+    if NumClasses == 0: NumClasses = len(selected_breeds)
+    print('\nSelected breeds:', NumClasses)
     printList(selected_breeds)
 
     # Conver list to dictionary
@@ -423,7 +427,6 @@ def main():
     print('\n'); print(device)
 
     # Build model 
-    NumClasses = len(selected_breeds)
     model = buildModel(CFG, NumClasses, use_gpu)
     print(model)
 

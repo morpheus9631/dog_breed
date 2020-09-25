@@ -1,0 +1,36 @@
+# config_train.yaml
+
+WORK:
+  PATH: &work_path "/home/user/work/dog_breed/"
+              
+DATA:
+  PATH: "/hd_data/dog-breed-identification/"
+  PATH_TEST: "/hd_data/dog-breed-identification/test/"
+  PATH_TRAIN: "/hd_data/dog-breed-identification/train/"
+  FNAME_LABELS: "labels.csv"
+
+PROCESSED:
+  PATH: "/home/user/work/dog_breed/processed/"
+  FNAME_BREEDS: "breeds_processed"
+  FNAME_LABELS: "labels_processed"
+  
+PRETRAINED:
+  PATH: "/home/user/work/dog_breed/pretrained/"
+  FNAME_RESNET18: 'resnet18-5c106cde.pth'
+  FNAME_RESNET50: 'resnet50-19c8e357.pth'
+  # FNAME_PREMODEL: 'resnet50_20200918-1645_acc93_16.pth'
+  FNAME_PREMODEL: ''
+
+OUTPUT:
+  PATH: "/home/user/work/dog_breed/"
+
+TRAIN:
+  FRAC_FOR_TRAIN: 0.8
+  NUM_CLASSES: 0
+  BATCH_SIZE: 100
+  NUM_EPOCHS: 200
+  LEARNING_RATE: 0.001
+  MOMENTUM: 0.9
+  STEP_SIZE: 7
+  GAMMA: 0.1
+

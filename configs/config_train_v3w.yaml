@@ -9,11 +9,6 @@ DATA:
   PATH_TRAIN: "D:\\Dataset\\dog-breed-identification\\train\\"
   FNAME_LABELS: "labels.csv"
 
-PROCESSED:
-  PATH: "D:\\GitWork\\dog_breed\\processed\\"
-  FNAME_BREEDS: "breeds_processed"
-  FNAME_LABELS: "labels_processed"
-  
 PRETRAINED:
   PATH: "D:\\GitWork\\dog_breed\\pretrained\\"
   FNAME_RESNET18: 'resnet18-5c106cde.pth'
@@ -26,7 +21,7 @@ OUTPUT:
 TRAIN:
   NUM_CLASSES: 0
   NUM_EPOCHS : 3
-  BATCH_SIZE : 16
+  BATCH_SIZE : 100
   FRAC_FOR_TRAIN: 0.8
   LEARNING_RATE: 0.001
   MOMENTUM: 0.9
