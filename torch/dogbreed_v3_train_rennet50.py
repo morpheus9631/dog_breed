@@ -6,7 +6,7 @@ from os.path import dirname
 curr_path = os.path.abspath(dirname(__file__))
 parent_path = os.path.abspath(dirname(curr_path))
 if parent_path not in sys.path: sys.path.insert(0, parent_path)
-print(parent_path)
+# print(parent_path)
 
 import argparse
 import copy
@@ -36,7 +36,7 @@ from configs.config_train_v3 import get_cfg_defaults
 # Read parameters from yaml file
 def parse_args():
     parser = argparse.ArgumentParser(description='Dog Breed identification')
-    parser.add_argument("--cfg", type=str, default="../configs/config_train_v3.yaml",
+    parser.add_argument("--cfg", type=str, default="configs/config_train_v3.yaml",
                         help="Configuration filename.")
     return parser.parse_args()
 
@@ -306,6 +306,8 @@ def train_model(
         'valid': len(loader['valid'].dataset)
     }
 
+    epoch_maxlen = len(str(num_epochs))
+
     for epoch in range(num_epochs):
         
         for phase in ['train', 'valid']:
@@ -365,10 +367,11 @@ def train_model(
                 torch.save(best_model_wts, abspath_best_model)
                 currStr = currDatetimeStr()
 
-        print('Epoch [{:3d}/{:3d}] train loss: {:.4f} acc: {:.4f}' 
-              '\n                valid loss: {:.4f} acc: {:.4f}'.format(
-                  epoch, num_epochs - 1,
-                  train_loss, train_acc, valid_loss, valid_acc))
+        fmt_str = "Epoch [{:"+f'{epoch_maxlen}'+"d}/{:"+f'{epoch_maxlen}'+"d}] " \
+                + "train loss: {:.4f}, acc: {:.4f}, valid loss: {:.4f}, acc: {:.4f}"
+        print(fmt_str.format(
+            epoch, num_epochs-1, train_loss, train_acc, valid_loss, valid_acc
+        ))
 
         out_vals = [ 
             epoch, train_acc.item(), train_loss, valid_acc.item(), valid_loss
