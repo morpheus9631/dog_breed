@@ -323,7 +323,7 @@ def train_model(
 
                 optimizer.zero_grad()
                 
-                # forward
+                # forward, 
                 # track history if only in train
                 with torch.set_grad_enabled(phase == 'train'):
                     outputs = model(inputs)
