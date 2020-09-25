@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 from PIL import Image
 from pandas import Series, DataFrame
-from os.path import join, exists
+from os.path import join, exists, isfile
 
 import torch
 from torch.utils.data import Dataset, DataLoader
@@ -54,10 +54,12 @@ def createProcessedLabels(path, df_lbls, df_bds):
     df['breed_id'] = df_lbls.breed.map(mapping)
 
     # Verify image exist or not accaording to id
+    # I don't write full path in here, but id only. 
+    # Because path can be as one parameter of customer dataset.
     def id2ImgPath(path, ext='.jpg'):
         return (
-            lambda f: join(path, f+ext) \
-            if exists(join(path, f+ext)) else None
+            lambda f: f \
+            if exists(join(path, f+ext)) and isfile(join(path, f+ext)) else None
         )
     id2imgP = id2ImgPath(path)
 
@@ -74,8 +76,6 @@ def saveToNpz(path, fname, df):
     return exists(f_abspath)
 
 
-
-
 def showNpzFile(f_abspath, num=10):
     load_data = np.load(f_abspath, allow_pickle=True)
 
@@ -86,8 +86,8 @@ def showNpzFile(f_abspath, num=10):
 
 
 def main():
-    DataPath = r'D:\GitWork\dog_breed\data'
-    print('\nRaw path:', DataPath)
+    DataPath = r'D:\Dataset\dog-breed-identification'
+    print('\nData path:', DataPath)
  
     ProcPath = r'D:\GitWork\dog_breed\processed'
     print('Proc path:', ProcPath)

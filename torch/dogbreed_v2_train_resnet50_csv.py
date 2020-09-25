@@ -31,12 +31,12 @@ from torch.utils.data import Dataset, DataLoader
 import torchvision
 from torchvision import datasets, models, transforms, utils
 
-from configs.config_train import get_cfg_defaults
+from configs.config_train_v2 import get_cfg_defaults
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Dog Breed identification by PyTorch')
-    parser.add_argument("--cfg", type=str, default="configs/config_train.yaml",
+    parser.add_argument("--cfg", type=str, default="configs/config_train_v2.yaml",
                         help="Configuration filename.")
     return parser.parse_args()
 
@@ -46,6 +46,7 @@ def getParams(cfg):
     params['BatchSize'] = cfg.TRAIN.BATCH_SIZE
     params['FracForTrain'] = cfg.TRAIN.FRAC_FOR_TRAIN
     params['NumClasses'] = cfg.TRAIN.NUM_CLASSES
+    params['TrainPath'] = cfg.DATA.PATH_TRAIN
     params['PretrainedModel'] = join(cfg.PRETRAINED.PATH, cfg.PRETRAINED.FNAME_RESNET50)
     params['ProcessedBreeds'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.FNAME_BREEDS+'.csv')
     params['ProcessedLabels'] = join(cfg.PROCESSED.PATH, cfg.PROCESSED.FNAME_LABELS+'.csv')
@@ -94,7 +95,9 @@ def getTrainAndValidData(selectedData, fracForTrain=0.8):
 
 class myDataset(Dataset):
     
-    def __init__(self, data, phase='train', transform=None):
+    def __init__(self, data, path, phase='train', transform=None):
+        self.path = path
+
         if phase == 'train':
             self.images = data['train'][0]
             self.labels = data['train'][1]
@@ -109,7 +112,8 @@ class myDataset(Dataset):
         self.len = len(self.images)
 
     def __getitem__(self, index):
-        img_path = self.images[index]
+        iid = self.images[index]
+        img_path = join(self.path, iid) + '.jpg'
         img_pil = Image.open(img_path)
 
         if self.transform is not None:
@@ -269,8 +273,9 @@ def main():
         normalize
     ])
 
-    trainSet = myDataset(selected_data, transform=transform)
-    validSet = myDataset(selected_data, phase='valid', transform=transform)
+    TrainPath = Params['TrainPath']
+    trainSet = myDataset(selected_data, TrainPath, transform=transform)
+    validSet = myDataset(selected_data, TrainPath, phase='valid', transform=transform)
 
     BatchSize = Params['BatchSize']
     trainLoader = DataLoader(trainSet, batch_size=BatchSize, shuffle=True)

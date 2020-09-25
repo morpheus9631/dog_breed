@@ -31,12 +31,12 @@ from torch.utils.data import Dataset, DataLoader
 import torchvision
 from torchvision import datasets, models, transforms, utils
 
-from configs.config_train import get_cfg_defaults
+from configs.config_train_v2 import get_cfg_defaults
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Dog Breed identification by PyTorch')
-    parser.add_argument("--cfg", type=str, default="configs/config_train.yaml",
+    parser.add_argument("--cfg", type=str, default="configs/config_train_v2.yaml",
                         help="Configuration filename.")
     return parser.parse_args()
 
@@ -54,6 +54,7 @@ def getParams(cfg):
     params['ProcessedBreeds'] = join(proc_path, cfg.PROCESSED.FNAME_BREEDS)+'.npz'
     params['ProcessedLabels'] = join(proc_path, cfg.PROCESSED.FNAME_LABELS)+'.npz'
 
+    params['TrainPath'] = cfg.DATA.PATH_TRAIN
     params['OutPath'] = cfg.OUTPUT.PATH
     params['Gamma'] = cfg.TRAIN.GAMMA
     params['Momentum'] = cfg.TRAIN.MOMENTUM
@@ -92,7 +93,7 @@ def df2dict(df, dir='fw'):
 
 class myDataset(Dataset):
 
-    def __init__(self, df, fracForTrain=0.8, train=True, transform=None):
+    def __init__(self, df, path, fracForTrain=0.8, train=True, transform=None):
 
         df_target = self.getTargetDataset(df, fracForTrain, train)
         # outstr = '\nTrain' if train else 'Valid'
@@ -102,6 +103,7 @@ class myDataset(Dataset):
         self.labels = list(df_target['breed_id'])
         self.len = len(self.images)
         self.transform = transform
+        self.path = path
 
     def getTargetDataset(self, df_in, fracForTrain, train):
         total_rows = df_in.shape[0]
@@ -115,7 +117,8 @@ class myDataset(Dataset):
         return df_out
 
     def __getitem__(self, index):
-        img_abspath = self.images[index]
+        iid = self.images[index]
+        img_abspath = join(self.path, iid) + '.jpg'
         img_pil = Image.open(img_abspath)
 
         if self.transform is not None:
@@ -300,12 +303,15 @@ def main():
 
     # Create DataSet
     frac_for_train = Params['FracForTrain']
+    TrainPath = Params['TrainPath']
     trainSet = myDataset(
-        df_labels_selected, frac_for_train, train=True, transform=transform
+        df_labels_selected, TrainPath, frac_for_train, train=True, 
+        transform=transform
     )
 
     validSet = myDataset(
-        df_labels_selected, frac_for_train, train=False, transform=transform
+        df_labels_selected, TrainPath, frac_for_train, train=False, 
+        transform=transform
     )
 
     BatchSize = Params['BatchSize']

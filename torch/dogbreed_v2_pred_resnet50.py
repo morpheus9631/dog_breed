@@ -4,9 +4,10 @@
 from __future__ import print_function, division
 
 import os, sys
-from os.path import abspath, dirname, isfile, join
+from os.path import abspath, dirname
 
-parent_path = abspath(dirname(dirname(__file__)))
+curr_path = abspath(dirname(__file__))
+parent_path = abspath(dirname(curr_path))
 if parent_path not in sys.path: sys.path.insert(0, parent_path)
 
 import argparse
@@ -18,6 +19,7 @@ import pandas as pd
 import time
 from datetime import datetime
 from os import listdir
+from os.path import isfile, join, exists
 from PIL import Image
 
 import torch
@@ -29,12 +31,12 @@ from torch.optim import lr_scheduler
 from torch.utils.data import Dataset, DataLoader
 from torchvision import datasets, models, transforms, utils
 
-from configs.config_train import get_cfg_defaults
+from configs.config_train_v2 import get_cfg_defaults
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Dog Breed identification by PyTorch')
-    parser.add_argument("--cfg", type=str, default="configs/config_train.yaml",
+    parser.add_argument("--cfg", type=str, default="configs/config_train_v2.yaml",
                         help="Configuration filename.")
     return parser.parse_args()
 
@@ -85,23 +87,24 @@ def dfInfo2Str(df, indent=4):
 
 class myDataset(Dataset):
 
-    def __init__(self, df, transform=None):
+    def __init__(self, path, df, transform=None):
 
         self.images = list(df['image'])
         self.labels = list(df['breed_id'])
         self.len = len(self.images)
+        self.path = path
 
         self.transform = transform
 
     def __getitem__(self, index):
-        img_path = self.images[index]
-        img_pil = Image.open(img_path)
+        iid = self.images[index]
+        f_abspath = join(self.path, iid) + '.jpg'
+        img_pil = Image.open(f_abspath)
 
         if self.transform is not None:
             img = self.transform(img_pil)
 
         lbl = int(self.labels[index])
-        iid = os.path.split(img_path)[1].replace('.jpg', '')
         
         return [img, lbl, iid]
 
@@ -109,14 +112,14 @@ class myDataset(Dataset):
         return self.len
 
 
-def getDataSet(df):
+def getDataSet(path, df):
     # Transform
     transform = transforms.Compose([
         transforms.Resize((224,224)),
         transforms.ToTensor(),
     ])
     
-    dataSet = myDataset(df, transform=transform)
+    dataSet = myDataset(path, df, transform=transform)
     return dataSet
     
 
@@ -133,7 +136,8 @@ def getModel(numClasses, preTranPath, preTranModel):
 
     # load pretrained mode
     f_abspath = join(preTranPath, preTranModel)
-    model.load_state_dict(torch.load(f_abspath))
+    if exists(f_abspath) and isfile(f_abspath):
+        model.load_state_dict(torch.load(f_abspath))
     return model
 
 
@@ -256,7 +260,8 @@ def main():
 
     # Set dataloader
     BatchSize = CFG.TRAIN.BATCH_SIZE
-    dataSet = getDataSet(df_labels_selected)
+    TrainPath = CFG.DATA.PATH_TRAIN
+    dataSet = getDataSet(TrainPath, df_labels_selected)
     dataLoader = DataLoader(dataSet, batch_size=BatchSize, shuffle=True)
     dataSize = len(dataSet)
 
