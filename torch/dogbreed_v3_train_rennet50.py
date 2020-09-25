@@ -368,7 +368,7 @@ def train_model(
                 currStr = currDatetimeStr()
 
         fmt_str = "Epoch [{:"+f'{epoch_maxlen}'+"d}/{:"+f'{epoch_maxlen}'+"d}] " \
-                + "train loss: {:.4f}, acc: {:.4f}, valid loss: {:.4f}, acc: {:.4f}"
+                + "train loss: {:.4f} acc: {:.4f}, valid loss: {:.4f} acc: {:.4f}"
         print(fmt_str.format(
             epoch, num_epochs-1, train_loss, train_acc, valid_loss, valid_acc
         ))

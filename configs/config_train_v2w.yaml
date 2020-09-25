@@ -16,9 +16,6 @@ PROCESSED:
   
 PRETRAINED:
   PATH: "D:\\GitWork\\dog_breed\\pretrained\\"
-  FNAME_RESNET18: 'resnet18-5c106cde.pth'
-  FNAME_RESNET50: 'resnet50-19c8e357.pth'
-  # FNAME_PREMODEL: 'resnet50_20200918-1645_acc93_16.pth'
   FNAME_PREMODEL: ''
 
 OUTPUT:
