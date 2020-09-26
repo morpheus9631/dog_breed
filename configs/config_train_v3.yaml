@@ -11,7 +11,7 @@ DATA:
 
 PRETRAINED:
   PATH: "D:\\GitWork\\dog_breed\\pretrained\\"
-  FNAME_PREMODEL: ''
+  FNAME_PREMODEL: 'resnet50_20200926-0005_acc84.pth'
 
 PROCESSED:
   PATH: "D:\\GitWork\\dog_breed\\processed\\"  
