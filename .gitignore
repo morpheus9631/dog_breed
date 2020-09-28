@@ -5,11 +5,11 @@ __pycache__/
 configs/__pycache__/
 
 # Data:
-data/
+data/*
 !data/download.txt
 
 # Downloads
-downloads/
+downloads/*
 !downloads/readme.md
 
 # Jupyter Notebook
@@ -18,7 +18,7 @@ Untitled.ipynb
 ipynb/Untitled*.ipynb
 
 # Pretrained Models
-pretrained/
+pretrained/*
 !pretrained/*.pth
 !pretrained/readme.md
 
@@ -34,6 +34,6 @@ processed/*
 olds/
 
 # output
-output/
+output/*
 !output/readme.md
 
