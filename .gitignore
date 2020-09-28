@@ -29,7 +29,7 @@ processed/*
 .vscode/
 
 # old codes
-olds/
+olds/*
 
 # output
 output/*
