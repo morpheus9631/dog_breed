@@ -424,7 +424,7 @@ def main():
     print('\nSelected breeds:', NumClasses)
     printList(selected_breeds)
 
-    # Conver list to dictionary
+    # Convert list to dictionary
     dict_bid_fw, dict_bid_bw = df2dict(df_breeds)
     print('\nForward breed dict:');  printDict(dict_bid_fw)
     # print('\nBackward breed dict:'); printDict(dict_bid_bw)
