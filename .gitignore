@@ -19,9 +19,8 @@ ipynb/Untitled*.ipynb
 
 # Pretrained Models
 pretrained/
-!pretrained/*.csv
+!pretrained/*.pth
 !pretrained/readme.md
-!pretrained/resnet50_20200923-2230_acc79.pth
 
 # Processed
 processed/*
