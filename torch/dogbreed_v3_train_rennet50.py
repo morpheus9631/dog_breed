@@ -36,7 +36,7 @@ from configs.config_train_v3 import get_cfg_defaults
 # Read parameters from yaml file
 def parse_args():
     parser = argparse.ArgumentParser(description='Dog Breed identification')
-    parser.add_argument("--cfg", type=str, default="configs/config_train_v3.yaml",
+    parser.add_argument("--cfg", type=str, default="../configs/config_train_v3.yaml",
                         help="Configuration filename.")
     return parser.parse_args()
 
@@ -290,7 +290,8 @@ def train_model(
     use_gpu = torch.cuda.is_available()
     
     best_model_wts = copy.deepcopy(model.state_dict())
-    best_acc = 0.0
+    best_valid_acc = 0.0
+    best_train_acc = 0.0
     
     # Write accurancy and loss to csv fiel
     outPath = cfg.OUTPUT.PATH
@@ -362,13 +363,18 @@ def train_model(
                 valid_loss = running_loss / data_size
                 valid_acc  = running_corrects / data_size
 
-            if phase == 'valid' and valid_acc > best_acc:
-                best_acc = valid_acc
+            # update best valid accuracy and best model 
+            if phase == 'valid' and valid_acc >= best_valid_acc:
+                best_train_acc = train_acc
+                best_valid_acc = valid_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
 
                 # save best model
-                accStr = int(best_acc * 100)
-                fname_best_model = 'resnet50_{}_acc{}.pth'.format(currStr, accStr)
+                best_train_acc_str = int(best_train_acc * 10000)
+                best_valid_acc_str = int(best_valid_acc * 10000)
+                fname_best_model = 'resnet50_{}_t{}_v{}.pth'.format(
+                    currStr, best_train_acc_str, best_valid_acc_str
+                )
                 abspath_best_model = join(outPath, fname_best_model)
                 torch.save(best_model_wts, abspath_best_model)
                 currStr = currDatetimeStr()
@@ -376,7 +382,7 @@ def train_model(
         fmt_str = "Epoch [{:"+f'{epoch_maxlen}'+"d}/{:"+f'{epoch_maxlen}'+"d}] " \
                 + "train loss: {:.4f} acc: {:.4f}, valid loss: {:.4f} acc: {:.4f}"
         print(fmt_str.format(
-            epoch, num_epochs-1, train_loss, train_acc, valid_loss, valid_acc
+            epoch+1, num_epochs, train_loss, train_acc, valid_loss, valid_acc
         ))
 
         out_vals = [ 
@@ -386,10 +392,10 @@ def train_model(
         csvFile.flush()
 
     csvFile.close()
-    print('\nBest val Acc: {:4f}'.format(best_acc))
+    print('\nBest val Acc: {:4f}'.format(best_valid_acc))
 
     model.load_state_dict(best_model_wts)
-    return model, best_acc
+    return model, best_valid_acc
 
 
 def main():
@@ -449,7 +455,7 @@ def main():
     # Training and validate
     NumEpochs = CFG.TRAIN.NUM_EPOCHS
     start_time = time.time()
-    best_model, best_acc = train_model(
+    best_model, best_valid_acc = train_model(
         CFG, dataloader, model, criterion, optimizer, exp_lr_scheduler, NumEpochs
     )
     print('Training time: {:10f} minutes'.format((time.time()-start_time)/60))
