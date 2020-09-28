@@ -11,7 +11,7 @@ DATA:
 
 PRETRAINED:
   PATH: "D:\\GitWork\\dog_breed\\pretrained\\"
-  FNAME_PREMODEL: ''
+  FNAME_PREMODEL: 'resnet50_20200926-2053_t9175_v9339.pth'
 
 PROCESSED:
   PATH: "D:\\GitWork\\dog_breed\\processed\\"  
@@ -29,5 +29,8 @@ TRAIN:
   STEP_SIZE: 7
   GAMMA: 0.1
 
-TEST:
-  BATCH_SIZE : 100 
+PREDICT:
+  BATCH_SIZE: 100
+  MODEL_PATH: "D:\\GitWork\\dog_breed\\pretrained\\"
+  MODEL_FILE: 'resnet50_20200926-2053_t9175_v9339.pth'
+  
