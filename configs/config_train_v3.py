@@ -32,6 +32,11 @@ _C.TRAIN.MOMENTUM = 0.9
 _C.TRAIN.STEP_SIZE = 7
 _C.TRAIN.GAMMA = 0.1
 
+_C.PREDICT = CN()
+_C.PREDICT.BATCH_SIZE = 100
+_C.PREDICT.MODEL_PATH = "D:\\GitWork\\dog_breed\\pretrained\\"
+_C.PREDICT.MODEL_FILE = 'resnet50_20200926-2053_t9175_v9339.pth'
+
 
 def get_cfg_defaults():
     """Get a yacs CfgNode object with default values for the project."""

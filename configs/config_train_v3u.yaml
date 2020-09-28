@@ -29,3 +29,7 @@ TRAIN:
   STEP_SIZE: 7
   GAMMA: 0.1
 
+TEST:
+  BATCH_SIZE : 100
+
+

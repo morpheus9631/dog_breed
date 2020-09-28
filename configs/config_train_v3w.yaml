@@ -28,4 +28,6 @@ TRAIN:
   MOMENTUM: 0.9
   STEP_SIZE: 7
   GAMMA: 0.1
-  
+
+TEST:
+  BATCH_SIZE : 100 
