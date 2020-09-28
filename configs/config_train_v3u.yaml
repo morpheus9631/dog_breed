@@ -31,5 +31,5 @@ TRAIN:
 
 PREDICT:
   BATCH_SIZE: 100
-  MODEL_PATH: "D:\\GitWork\\dog_breed\\pretrained\\"
+  MODEL_PATH: "/home/user/work/dog_breed/pretrained/"
   MODEL_FILE: 'resnet50_20200926-2053_t9175_v9339.pth'
