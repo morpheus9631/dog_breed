@@ -4,13 +4,16 @@ __pycache__/
 *$py.class
 configs/__pycache__/
 
+# all readme.md
+!*/readme.md
+
 # Data:
 data/*
-!data/download.txt
+#!data/readme.md
 
 # Downloads
 downloads/*
-!downloads/readme.md
+#!downloads/readme.md
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -20,7 +23,7 @@ ipynb/Untitled*.ipynb
 # Pretrained Models
 pretrained/*
 !pretrained/*.pth
-!pretrained/readme.md
+#!pretrained/readme.md
 
 # Processed
 processed/*
@@ -35,5 +38,5 @@ olds/
 
 # output
 output/*
-!output/readme.md
+#!output/readme.md
 
