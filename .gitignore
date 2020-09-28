@@ -35,4 +35,5 @@ processed/*
 olds/
 
 # output
-output/
+output/*
+
